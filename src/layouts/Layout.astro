@@ -4,6 +4,7 @@ import "@fontsource-variable/playfair-display";
 import "@fontsource-variable/noto-sans-thai";
 import "../styles/global.css";
 import Icon from "../components/Icon.astro";
+import { cosplayHome } from "../data/cosplay";
 import VideoDialog from "../components/VideoDialog.astro";
 import { videos, videosFor } from "../data/videos";
 import Photo from "../components/Photo.astro";
@@ -212,6 +213,17 @@ const schema = {
         </a>
       </nav>
       <div class="header-actions">
+        <a
+          class="cosplay-switch"
+          href={cosplayHome(lang)}
+          aria-label={t(
+            lang,
+            "Explore Dada’s cosplay portfolio",
+            "ชมผลงานคอสเพลย์ Dada",
+          )}
+        >
+          ✿ <span>Cosplay</span>
+        </a>
         <div class="experience-controls">
           <div
             class="language-switch"
@@ -303,6 +315,17 @@ const schema = {
         </p>
         <SocialLinks lang={lang} />
         <div class="footer-essentials">
+          <a href={cosplayHome(lang)}>
+            <Icon name="sparkle" />
+            <span>
+              {t(
+                lang,
+                "Kayyalis — my cosplay universe",
+                "Kayyalis — โลกคอสเพลย์ของด้า",
+              )}{" "}
+              ↗
+            </span>
+          </a>
           <a href="mailto:wwkunwadee05@gmail.com">
             <Icon name="mail" />
             <span>wwkunwadee05@gmail.com</span>
@@ -408,6 +431,13 @@ const schema = {
                 <Icon name="mail" />
               </small>
               <span>{t(lang, "Let’s connect", "มาทำความรู้จักกัน")}</span>
+              <i>↗</i>
+            </a>
+            <a href={cosplayHome(lang)}>
+              <small>
+                <Icon name="sparkle" />
+              </small>
+              <span>{t(lang, "My cosplay universe", "โลกคอสเพลย์ของด้า")}</span>
               <i>↗</i>
             </a>
           </nav>

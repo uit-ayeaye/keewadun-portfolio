@@ -16,7 +16,7 @@ async function walk(dir) {
 }
 const files = await walk("dist");
 const pages = files.filter((f) => f.endsWith(".html"));
-assert.equal(pages.length, 37, "Expected 36 bilingual pages plus a 404");
+assert.equal(pages.length, 61, "Expected 60 bilingual pages plus a 404");
 for (const file of pages) {
   const html = await readFile(file, "utf8");
   assert.match(html, /<title>[^<]+<\/title>/);
@@ -57,7 +57,10 @@ for (const file of pages) {
   assert.match(html, /name="twitter:image:alt"/);
   if (file === "dist/index.html" || file === "dist/th/index.html") {
     const mediaFiles = files.filter(
-      (f) => f.endsWith(".mp4") && !/-(hq|preview)\.mp4$/.test(f),
+      (f) =>
+        !f.includes("/cosplay/") &&
+        f.endsWith(".mp4") &&
+        !/-(hq|preview)\.mp4$/.test(f),
     );
     assert.equal(mediaFiles.length, 12, "Every supplied clip has a web copy");
     assert.equal(
@@ -69,7 +72,12 @@ for (const file of pages) {
       mediaFiles.length,
     );
     assert.equal(files.filter((f) => f.endsWith("-hq.mp4")).length, 12);
-    assert.equal(files.filter((f) => f.endsWith("-preview.mp4")).length, 12);
+    assert.equal(
+      files.filter(
+        (f) => !f.includes("/cosplay/") && f.endsWith("-preview.mp4"),
+      ).length,
+      12,
+    );
     assert.ok(
       (html.match(/preload="none"/g) || []).length >= mediaFiles.length,
     );
@@ -80,10 +88,16 @@ for (const file of pages) {
       "Preview autoplay is scheduled only after visibility and preference checks",
     );
   }
-  assert.match(html, /class="theme-toggle"/);
-  assert.match(html, /id="menu-dialog"/);
+  if (!file.includes("/cosplay/")) {
+    assert.match(html, /class="theme-toggle"/);
+    assert.match(html, /id="menu-dialog"/);
+    assert.match(html, /tel:\+66969769369/);
+  } else {
+    assert.match(html, /id="cos-menu"/);
+    assert.match(html, /id="cos-media"/);
+    assert.match(html, /https:\/\/www.instagram.com\/kayyalis.cos\//);
+  }
   assert.match(html, /https:\/\/www.tiktok.com\/@keewadun/);
-  assert.match(html, /tel:\+66969769369/);
   for (const [, url] of html.matchAll(/(?:href|src|poster)="([^"#]+)"/g)) {
     if (!url.startsWith(base + "/")) continue;
     const local = url.split("#")[0].split("?")[0].slice(base.length);
@@ -100,7 +114,7 @@ for (const file of pages) {
     JSON.parse(json);
 }
 const sitemap = await readFile("dist/sitemap.xml", "utf8");
-assert.equal((sitemap.match(/<loc>/g) || []).length, 36);
+assert.equal((sitemap.match(/<loc>/g) || []).length, 60);
 const js = files.filter((f) => f.endsWith(".js"));
 const jsBytes = (
   await Promise.all(js.map(async (f) => (await stat(f)).size))
@@ -108,7 +122,7 @@ const jsBytes = (
 console.log(
   JSON.stringify({
     pages: pages.length,
-    sitemapURLs: 36,
+    sitemapURLs: 60,
     internalLinks: "passed",
     structuredData: "valid JSON",
     javascriptBytes: jsBytes,

@@ -4229,3 +4229,9 @@ dialog.is-closing::backdrop {
     animation: none !important;
   }
 }
+
+/* Two complementary portfolios, each with its own identity. */
+.cosplay-switch{display:inline-flex;align-items:center;gap:6px;font-size:12px;color:var(--wine);white-space:nowrap;padding:10px;border:1px solid currentColor;border-radius:30px;transition:transform .35s cubic-bezier(.2,1.4,.4,1)}
+.cosplay-switch:hover{transform:translateY(-3px) rotate(-3deg)}
+@media(max-width:600px){.cosplay-switch{font-size:18px;padding:5px 10px}.cosplay-switch span{display:none}}
+@media(max-width:650px){.header-actions>.cosplay-switch{display:none}}
