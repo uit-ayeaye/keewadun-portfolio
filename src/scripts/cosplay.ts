@@ -86,7 +86,7 @@ function applyFilter() {
   more.hidden = matches.length <= limit;
   status.textContent = th
     ? `แสดง ${Math.min(limit, matches.length)} จาก ${matches.length} ภาพ`
-    : `Showing ${Math.min(limit, matches.length)} of ${matches.length} photographs`;
+    : `Showing ${Math.min(limit, matches.length)} of ${matches.length} images`;
 }
 document.querySelectorAll<HTMLButtonElement>("[data-filter]").forEach((b) =>
   b.addEventListener("click", () => {
@@ -137,7 +137,7 @@ function render() {
     const p = data.photos.find((p) => p.id === queue[index])!;
     const img = document.createElement("img");
     img.src = `${data.base}/cosplay/photos/${p.id}.webp`;
-    img.alt = `Dada as ${p.name} — ${p.series}`;
+    img.alt = p.alt;
     img.width = p.width;
     img.height = p.height;
     stage.append(img);

@@ -35,12 +35,12 @@ const title = character
     );
 const description = character
   ? tx(
-      `Explore Dada’s ${character.name} cosplay from ${character.series}: ${character.photos.length} photos, character details and cosplay videos.`,
-      `ชมคอสเพลย์ ${character.name} จาก ${character.series} โดย Dada พร้อมภาพถ่าย ${character.photos.length} ภาพและวิดีโอ`,
+      `Explore Dada’s ${character.name} cosplay from ${character.series}: ${character.photos.length} images, character details and cosplay videos.`,
+      `ชมคอสเพลย์ ${character.name} จาก ${character.series} โดย Dada พร้อมภาพ ${character.photos.length} ภาพและวิดีโอ`,
     )
   : tx(
-      "Step into Kayyalis: Dada’s cosplay portfolio. Explore 11 characters, 68 photographs and 25 cosplay videos from Wuthering Waves, Zenless Zone Zero, anime and more.",
-      "เข้าสู่โลกคอสเพลย์ของ Kayyalis หรือ Dada พบกับ 11 ตัวละคร ภาพถ่าย 68 ภาพ และวิดีโอ 25 คลิป จากเกมและอนิเมะที่ชื่นชอบ",
+      "Step into Kayyalis: Dada’s cosplay portfolio. Explore 11 characters, 68 gallery images and 25 cosplay videos from Wuthering Waves, Zenless Zone Zero, anime and more.",
+      "เข้าสู่โลกคอสเพลย์ของ Kayyalis หรือ Dada พบกับ 11 ตัวละคร ภาพในแกลเลอรี 68 ภาพ และวิดีโอ 25 คลิป จากเกมและอนิเมะที่ชื่นชอบ",
     );
 const mixedPhotos = Array.from(
   { length: Math.max(...characters.map((c) => c.photos.length)) },
@@ -115,7 +115,7 @@ const schema = {
     ...shownPhotos.map((p) => ({
       "@type": "ImageObject",
       contentUrl: origin + photoURL(p.id),
-      name: `Dada as ${p.name} — ${p.series}`,
+      name: p.alt,
       ...(p.credit ? { creator: { "@type": "Person", name: p.credit } } : {}),
       creditText: p.credit || "Kayyalis · original Instagram post",
       isBasedOn: p.source,
@@ -294,7 +294,7 @@ const schema = {
           <div class="hero-note">
             <span aria-hidden="true">✧</span>
             {character
-              ? `${character.photos.length} ${tx("photographs", "ภาพถ่าย")} · ${character.clips.length} ${tx("clips", "คลิป")}`
+              ? `${character.photos.length} ${tx("images", "ภาพ")} · ${character.clips.length} ${tx("clips", "คลิป")}`
               : tx(
                   "A cosplay diary, made of little obsessions.",
                   "บันทึกคอสเพลย์จากสิ่งเล็ก ๆ ที่หลงรัก",
@@ -411,7 +411,7 @@ const schema = {
                   <p>{c.series}</p>
                   <small>
                     {c.photos.length}{" "}
-                    {tx(c.photos.length === 1 ? "photo" : "photos", "ภาพ")}{" "}
+                    {tx(c.photos.length === 1 ? "image" : "images", "ภาพ")}{" "}
                     {c.clips.length
                       ? `· ${c.clips.length} ${tx(c.clips.length === 1 ? "clip" : "clips", "คลิป")}`
                       : ""}
@@ -445,7 +445,7 @@ const schema = {
           <div
             class="filter-pills"
             role="group"
-            aria-label={tx("Filter photographs", "กรองภาพถ่าย")}
+            aria-label={tx("Filter images", "กรองภาพถ่าย")}
           >
             <button data-filter="all" aria-pressed="true">
               {tx("Everything", "ทั้งหมด")} <small>{shownPhotos.length}</small>
@@ -496,7 +496,7 @@ const schema = {
                 src={photoURL(p.id, true)}
                 width={p.width}
                 height={p.height}
-                alt={`Dada as ${p.name} — ${p.series}${p.credit ? `. Photo: ${p.credit}` : ""}`}
+                alt={`${p.alt}${p.credit ? `. Photo: ${p.credit}` : ""}`}
                 loading="lazy"
                 decoding="async"
               />

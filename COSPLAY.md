@@ -5,12 +5,12 @@ Separate visual identity at `/cosplay/` and `/th/cosplay/`, plus 11 character pa
 ## Content provenance
 
 Collected September 26, 2026 from the requested public profiles:
-- Instagram: https://www.instagram.com/kayyalis.cos/ — all 20 visible posts: 15 photo posts containing 68 photos, and five reels.
+- Instagram: https://www.instagram.com/kayyalis.cos/ — all 20 visible posts: 15 photo posts containing 68 images (including a Miyabi reaction illustration), and five reels.
 - TikTok: https://www.tiktok.com/@keewadun — 20 posts with cosplay captions, curated from the public profile. Non-cosplay posts are excluded.
 
 `src/data/cosplay-photos.json` preserves each original post URL and photographer credit when stated. `src/data/cosplay-videos.json` preserves source links, platform, duration and dimensions. Character names and series come from original captions/hashtags. Instagram and TikTok versions can overlap; 25 is the number of source posts, not 25 unique shoots.
 
-Unresized photos and downloaded source videos are preserved locally outside Git in `../Kayyalis source media/`. The website uses 640px thumbnails and up-to-1600px WebP photographs. Full videos retain downloaded resolution and use H.264/AAC for broad playback support; the highest source is 1916×1078. Platform compression varies and videos are not upscaled. Six-second previews are silent and smaller. No third-party iframe or tracking script is required to view the gallery.
+Unresized images and downloaded source videos are preserved locally outside Git in `../Kayyalis source media/`. The website uses 640px thumbnails and up-to-1600px WebP photographs. Full videos retain downloaded resolution and use H.264/AAC for broad playback support; the highest source is 1916×1078. Platform compression varies and videos are not upscaled. Six-second previews are silent and smaller. No third-party iframe or tracking script is required to view the gallery.
 
 ## Interaction and accessibility
 
