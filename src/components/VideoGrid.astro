@@ -1,0 +1,23 @@
+---
+import { type Lang, t, categories } from "../data/portfolio";
+import { type VideoClip, videoURL, posterURL, duration } from "../data/videos";
+const { clips, lang } = Astro.props as { clips: VideoClip[]; lang: Lang };
+---
+<div class="video-grid">
+  {clips.map((clip, index) => (
+    <article class="video-card" data-video-category={clip.category} data-reveal>
+      <a class="video-poster" href={videoURL(clip)} data-video={clip.id} aria-label={`${t(lang, "Watch", "ชม")} ${clip[lang]} · ${duration(clip)}`}>
+        <img src={posterURL(clip)} alt={clip[lang]} width="640" height="800" loading="lazy" decoding="async" />
+        <span class="video-index" aria-hidden="true">{String(index + 1).padStart(2, "0")}</span>
+        <span class="video-play" aria-hidden="true">▶</span>
+        <span class="video-duration">{duration(clip)}</span>
+        <span class="video-watch">{t(lang, "Watch the moment", "ชมช่วงเวลานี้")} ↗</span>
+      </a>
+      <div class="video-card-copy">
+        <p class="eyebrow">{categories[clip.category][lang]}</p>
+        <h3><a href={videoURL(clip)} data-video={clip.id}>{clip[lang]}</a></h3>
+        <p>{clip.description[lang]}</p>
+      </div>
+    </article>
+  ))}
+</div>

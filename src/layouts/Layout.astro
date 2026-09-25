@@ -3,6 +3,8 @@ import "@fontsource-variable/manrope";
 import "@fontsource-variable/playfair-display";
 import "@fontsource-variable/noto-sans-thai";
 import "../styles/global.css";
+import VideoDialog from "../components/VideoDialog.astro";
+import { videos, videosFor } from "../data/videos";
 import Photo from "../components/Photo.astro";
 import SocialLinks from "../components/SocialLinks.astro";
 import { socials, resumeURL, portfolioURL } from "../data/portfolio";
@@ -32,8 +34,8 @@ const {
   ),
   description = t(
     Astro.props.lang,
-    "Meet Dada: Thai–English MC, content creator and voice actor. Explore 17 hosting credits, stage stories, and her cosmetic science background at Mae Fah Luang University.",
-    "รู้จัก Dada พิธีกรไทย–อังกฤษ คอนเทนต์ครีเอเตอร์ และนักพากย์เสียง ชม 17 ผลงานพิธีกรและเรื่องราวด้านวิทยาศาสตร์เครื่องสำอาง มหาวิทยาลัยแม่ฟ้าหลวง",
+    "Meet Dada: Thai–English MC, content creator and voice actor. Watch 12 video samples and explore 17 hosting credits, from festivals to brand presentations and formal ceremonies.",
+    "รู้จัก Dada พิธีกรไทย–อังกฤษ คอนเทนต์ครีเอเตอร์ และนักพากย์เสียง ชม 12 วิดีโอและ 17 ผลงานพิธีกร ตั้งแต่เทศกาล งานนำเสนอสินค้า ไปจนถึงพิธีการ",
   ),
   event,
   noindex = false,
@@ -41,7 +43,8 @@ const {
 const en = event ? eventPath("en", event.id) : home("en");
 const th = event ? eventPath("th", event.id) : home("th");
 const canonical = origin + (event ? eventPath(lang, event.id) : home(lang));
-const image = origin + photo(event?.image || "dada-portrait.jpg").src;
+const image = `${origin}${base}/social/${event?.id || "dada-kunwadee"}.jpg`;
+const imageAlt = event ? `${event[lang]} — Dada, Kunwadee Phanompotivong` : "Dada — Kunwadee Phanompotivong · Thai–English MC, creator & voice actor";
 const person = {
   "@type": "Person",
   "@id": origin + home("en") + "#dada",
@@ -135,10 +138,15 @@ const schema = {
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonical} />
     <meta property="og:image" content={image} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:type" content="image/jpeg" />
+    <meta property="og:site_name" content="Dada — Kunwadee" />
+    <meta name="twitter:image:alt" content={imageAlt} />
     <meta
       property="og:image:alt"
       content={
-        event?.image ? event[lang] : "Dada — Kunwadee Phanompotivong, portrait"
+        imageAlt
       }
     />
     <meta property="og:locale" content={lang === "th" ? "th_TH" : "en_US"} />
@@ -156,6 +164,7 @@ const schema = {
     />
   </head>
   <body>
+    <div class="arrival-charm" aria-hidden="true"><svg viewBox="0 0 32 40" fill="none"><rect x="10" y="2" width="12" height="23" rx="6" stroke="currentColor" stroke-width="2"/><path d="M5 17v3a11 11 0 0 0 22 0v-3M16 31v7M10 38h12M13 8h6M13 13h6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><span>dada ✳</span><i></i></div>
     <a href="#main" class="skip-link">
       {t(lang, "Skip to content", "ข้ามไปยังเนื้อหา")}
     </a>
@@ -179,6 +188,7 @@ const schema = {
         <a href={`${home(lang)}#work`}>
           {t(lang, "On the mic", "ผลงานบนเวที")}
         </a>
+        <a href={`${home(lang)}#videos`}>{t(lang, "In motion", "วิดีโอ")}</a>
         <a href={`${home(lang)}#events`}>
           {t(lang, "All the moments", "ทุกช่วงเวลา")}
         </a>
@@ -325,13 +335,14 @@ const schema = {
               <span>{t(lang, "On the mic", "ผลงานบนเวที")}</span>
               <i>↗</i>
             </a>
-            <a href={`${home(lang)}#events`}>
-              <small>03</small>
+            <a href={`${home(lang)}#videos`}><small>03</small><span>{t(lang, "In motion", "วิดีโอ")}</span><i>↗</i></a>
+        <a href={`${home(lang)}#events`}>
+              <small>04</small>
               <span>{t(lang, "All 17 moments", "ทั้ง 17 ช่วงเวลา")}</span>
               <i>↗</i>
             </a>
             <a href={`${home(lang)}#contact`}>
-              <small>04</small>
+              <small>05</small>
               <span>{t(lang, "Let’s connect", "มาทำความรู้จักกัน")}</span>
               <i>↗</i>
             </a>
@@ -416,13 +427,7 @@ const schema = {
           <a href={resumeURL} target="_blank" rel="noopener noreferrer">
             {t(lang, "Résumé", "เรซูเม่")} ↗
           </a>
-          <a
-            href="https://linktr.ee/keewadun"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            {t(lang, "Request video samples", "ขอตัวอย่างวิดีโอ")} ↗
-          </a>
+          <a href={`${home(lang)}#videos`} data-close-on-navigate>{t(lang, "Watch video samples", "ชมตัวอย่างวิดีโอ")} ↗</a>
         </div>
         <button type="button" class="copy-email text-button">
           {t(lang, "Copy email address", "คัดลอกอีเมล")} <span>⧉</span>
@@ -433,5 +438,6 @@ const schema = {
     <script>
       import "../scripts/interactions";
     </script>
+    <VideoDialog clips={event ? videosFor(event.id) : videos} lang={lang} />
   </body>
 </html>

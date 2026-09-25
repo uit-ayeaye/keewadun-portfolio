@@ -7,6 +7,7 @@ export interface EventCredit {
   year: string;
   category: Category;
   image?: string;
+  imageSource?: "video";
   page: number;
   gallery?: string[];
   description?: Record<Lang, string>;
@@ -50,6 +51,8 @@ export const events: EventCredit[] = [
   },
   {
     id: "balloon",
+    image: "balloon-fiesta.jpg",
+    imageSource: "video",
     en: "International Balloon Fiesta",
     th: "International Balloon Fiesta",
     year: "2025, 2026",
@@ -58,6 +61,8 @@ export const events: EventCredit[] = [
   },
   {
     id: "thaifex",
+    image: "thaifex-thai-union.jpg",
+    imageSource: "video",
     en: "THAIFEX–Anuga Asia",
     th: "THAIFEX–Anuga Asia",
     year: "2026",
@@ -66,6 +71,8 @@ export const events: EventCredit[] = [
   },
   {
     id: "grand-prix",
+    image: "compak-sporting.jpg",
+    imageSource: "video",
     en: "Grand Prix of Chiang Mai Compak Sporting",
     th: "Grand Prix of Chiang Mai Compak Sporting",
     year: "—",

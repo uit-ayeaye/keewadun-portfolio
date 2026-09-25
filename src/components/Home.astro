@@ -1,4 +1,6 @@
 ---
+import VideoGrid from "./VideoGrid.astro";
+import { videos, videosFor } from "../data/videos";
 import Layout from "../layouts/Layout.astro";
 import EventVisual from "./EventVisual.astro";
 import SocialLinks from "./SocialLinks.astro";
@@ -43,8 +45,8 @@ const { lang } = Astro.props as { lang: Lang };
         )}
       </p>
       <div class="hero-actions hero-enter">
-        <a href="#work" class="button">
-          {t(lang, "Meet me on stage", "พบกันบนเวที")} <span>↗</span>
+        <a href="#videos" class="button">
+          {t(lang, "See Dada in motion", "ชม Dada บนเวที")} <span>↗</span>
         </a>
         <a href="#about" class="quiet-link">
           {t(lang, "Get to know me", "รู้จักกันอีกนิด")} <span>↓</span>
@@ -266,11 +268,28 @@ const { lang } = Astro.props as { lang: Lang };
       </div>
     </div>
   </section>
+  <section id="videos" class="section video-section">
+    <div class="wrap">
+      <div class="section-heading" data-reveal>
+        <div><p class="eyebrow">03 / {t(lang, "DADA, IN MOTION", "DADA บนเวที")}</p>
+        <h2>{t(lang, "A voice. A spark.", "น้ำเสียงและประกาย")}
+          <br /><em>{t(lang, "A real connection.", "เชื่อมทุกความรู้สึก")}</em></h2></div>
+        <div class="section-aside"><span class="reel-stamp" aria-hidden="true">▶ <span>PRESS<br />PLAY</span> ✳</span>
+          <p>{t(lang, "12 little windows into life on the mic. Pick a moment and press play.", "12 ช่วงเวลาจากชีวิตพิธีกร เลือกผลงานที่ชอบแล้วกดเล่นได้เลย")}</p></div>
+      </div>
+      <div class="filters video-filters" role="group" aria-label={t(lang, "Filter videos", "กรองวิดีโอ")}>
+        <button type="button" data-video-filter="all" aria-pressed="true">{t(lang, "All films", "วิดีโอทั้งหมด")} <span>12</span></button>
+        {Object.entries(categories).map(([key, names]) => <button type="button" data-video-filter={key} aria-pressed="false">{names[lang]}</button>)}
+      </div>
+      <p class="video-count" role="status" aria-live="polite">{t(lang, "12 films to explore · original event audio", "12 วิดีโอให้ชม · เสียงจริงจากงาน")}</p>
+      <VideoGrid clips={videos} lang={lang} />
+    </div>
+  </section>
   <section id="events" class="section wrap archive">
     <div class="section-heading" data-reveal>
       <div>
         <p class="eyebrow">
-          03 / {t(lang, "THE STAGE DIARY", "บันทึกจากเวที")}
+          04 / {t(lang, "THE STAGE DIARY", "บันทึกจากเวที")}
         </p>
         <h2>
           {t(lang, "Many stages.", "หลากหลายเวที")}{" "}
@@ -322,7 +341,7 @@ const { lang } = Astro.props as { lang: Lang };
           <span class="event-number">{String(index + 1).padStart(2, "0")}</span>
           <span class="event-title">
             {e[lang]}
-            <small>{categories[e.category][lang]}</small>
+            <small>{categories[e.category][lang]}{videosFor(e.id).length > 0 && <span class="has-video"> · ▶ {videosFor(e.id).length} {t(lang, "clips", "วิดีโอ")}</span>}</small>
           </span>
           <span class="event-year">{e.year}</span>
           <span class="event-arrow" aria-hidden="true">
@@ -348,8 +367,8 @@ const { lang } = Astro.props as { lang: Lang };
     <p class="source-note">
       {t(
         lang,
-        "11 events have matched portfolio photos. Six use labeled portraits while event photos are awaited. A dash means the year was not listed.",
-        "11 ผลงานมีภาพตรงกับงาน อีก 6 ผลงานใช้ภาพบุคคลพร้อมป้ายกำกับระหว่างรอภาพจากงาน เครื่องหมายขีดหมายถึงไม่ได้ระบุปี",
+        "14 events have portfolio photos or stills from the supplied videos. Three use labeled portraits. A dash means the year was not listed.",
+        "14 ผลงานมีภาพจากพอร์ตโฟลิโอหรือวิดีโอที่ได้รับ อีก 3 ผลงานใช้ภาพบุคคลพร้อมป้ายกำกับ เครื่องหมายขีดหมายถึงไม่ได้ระบุปี",
       )}
     </p>
   </section>
@@ -375,7 +394,7 @@ const { lang } = Astro.props as { lang: Lang };
       </div>
       <div class="offstage-copy" data-reveal>
         <p class="eyebrow">
-          04 / {t(lang, "AFTER THE APPLAUSE", "หลังเสียงปรบมือ")}
+          05 / {t(lang, "AFTER THE APPLAUSE", "หลังเสียงปรบมือ")}
         </p>
         <h2>
           {t(lang, "There’s more", "ยังมีเรื่องราว")}

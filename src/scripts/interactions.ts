@@ -239,3 +239,106 @@ window.addEventListener(
 );
 window.addEventListener("resize", updateProgress);
 updateProgress();
+
+// Video sources live in inert templates: no movie bytes until a visitor chooses one.
+const videoDialog = document.querySelector<HTMLDialogElement>("#video-dialog");
+document.addEventListener("click", (event) => {
+  if (!(event.target instanceof Element)) return;
+  const trigger = event.target.closest<HTMLAnchorElement>("[data-video]");
+  if (
+    !trigger ||
+    event.metaKey ||
+    event.ctrlKey ||
+    event.shiftKey ||
+    event.altKey
+  )
+    return;
+  const template = document.getElementById(
+    `video-${trigger.dataset.video}`,
+  ) as HTMLTemplateElement | null;
+  const content = videoDialog?.querySelector(".video-dialog-content");
+  if (!template || !content || !videoDialog) return;
+  event.preventDefault();
+  content.replaceChildren(template.content.cloneNode(true));
+  openDialog(videoDialog);
+  const player = content.querySelector("video");
+  const shell = content.querySelector(".video-player-shell");
+  const status = content.querySelector(".video-status");
+  if (!player) return;
+  const ready = () => shell?.classList.remove("is-buffering");
+  player.addEventListener("waiting", () =>
+    shell?.classList.add("is-buffering"),
+  );
+  player.addEventListener("playing", ready);
+  player.addEventListener("loadeddata", ready);
+  player.addEventListener("pause", ready);
+  player.querySelector("source")?.addEventListener("error", () => {
+    ready();
+    if (status)
+      status.textContent = t(
+        "This film couldn’t load. Try the separate player below.",
+        "โหลดวิดีโอไม่ได้ ลองเปิดเครื่องเล่นแยกด้านล่าง",
+      );
+  });
+  player.play().catch(() => {
+    ready();
+    if (status && videoDialog.open)
+      status.textContent = t(
+        "Press play to watch with the original audio.",
+        "กดเล่นเพื่อชมพร้อมเสียงจริงจากงาน",
+      );
+  });
+});
+videoDialog?.addEventListener("close", () => {
+  const player = videoDialog.querySelector("video");
+  if (player) {
+    player.pause();
+    player.removeAttribute("src");
+    player.querySelector("source")?.removeAttribute("src");
+    player.load();
+  }
+  videoDialog.querySelector(".video-dialog-content")?.replaceChildren();
+});
+document
+  .querySelectorAll<HTMLAnchorElement>("[data-close-on-navigate]")
+  .forEach((link) => {
+    link.addEventListener("click", () => link.closest("dialog")?.close());
+  });
+const videoFilters = document.querySelectorAll<HTMLButtonElement>(
+  "[data-video-filter]",
+);
+videoFilters.forEach((button) =>
+  button.addEventListener("click", () => {
+    const category = button.dataset.videoFilter;
+    videoFilters.forEach((b) =>
+      b.setAttribute("aria-pressed", String(b === button)),
+    );
+    let count = 0;
+    document
+      .querySelectorAll<HTMLElement>(".video-section [data-video-category]")
+      .forEach((card) => {
+        card.hidden =
+          category !== "all" && card.dataset.videoCategory !== category;
+        if (!card.hidden) count++;
+      });
+    const status = document.querySelector(".video-count");
+    if (status)
+      status.textContent = t(
+        `${count} films to explore · original event audio`,
+        `${count} วิดีโอให้ชม · เสียงจริงจากงาน`,
+      );
+  }),
+);
+// A finite welcome flourish, never a blocking loading screen.
+const charm = document.querySelector<HTMLElement>(".arrival-charm");
+if (charm) {
+  let shown = false;
+  try {
+    shown = sessionStorage.getItem("dada-arrived") === "yes";
+    sessionStorage.setItem("dada-arrived", "yes");
+  } catch {}
+  if (!shown && !reduced.matches) {
+    charm.classList.add("is-arriving");
+    window.setTimeout(() => charm.remove(), 1800);
+  } else charm.remove();
+}

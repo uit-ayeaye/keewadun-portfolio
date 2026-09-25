@@ -1,4 +1,6 @@
 ---
+import VideoGrid from "./VideoGrid.astro";
+import { videosFor } from "../data/videos";
 import Layout from "../layouts/Layout.astro";
 import EventVisual from "./EventVisual.astro";
 import Photo from "./Photo.astro";
@@ -17,6 +19,7 @@ const { event: e, lang } = Astro.props as { event: EventCredit; lang: Lang };
 const index = events.findIndex((event) => event.id === e.id);
 const next = events[(index + 1) % events.length];
 const desc = description(e, lang);
+const clips = videosFor(e.id);
 ---
 
 <Layout
@@ -65,6 +68,7 @@ const desc = description(e, lang);
           {t(lang, "Take a closer look", "ดูใกล้ ๆ")} ⤢
         </span>
       </button>
+      {e.imageSource === "video" && <p class="source-note">{t(lang, "Still from the supplied event video.", "ภาพจากวิดีโอผลงานที่ได้รับ")}</p>}
     </div>
   ) : (
     <div class="event-cover wrap placeholder-cover">
@@ -78,6 +82,12 @@ const desc = description(e, lang);
       </p>
     </div>
   )}
+  {clips.length > 0 && <section id="videos" class="section wrap event-films">
+    <div class="section-heading" data-reveal><div><p class="eyebrow">DADA / {t(lang, "IN MOTION", "บนเวที")}</p>
+      <h2>{t(lang, "Hear the moment.", "ชมช่วงเวลาบนเวที")}</h2></div>
+      <p>{t(lang, "Real stage moments. Original event audio.", "บรรยากาศบนเวที พร้อมเสียงจริงจากงาน")}</p></div>
+    <VideoGrid clips={clips} lang={lang} />
+  </section>}
   <section class="section wrap story-grid">
     <div data-reveal>
       <p class="eyebrow">

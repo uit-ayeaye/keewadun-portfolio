@@ -26,16 +26,60 @@ for (const file of pages) {
   assert.match(html, /type="application\/ld\+json"/);
   assert.equal((html.match(/<h1\b/g) || []).length, 1, `${file}: one h1`);
   if (file === "dist/index.html" || file === "dist/th/index.html") {
-    const cards = [...html.matchAll(/<a\s+class="event-row"[\s\S]*?<\/a>/g)].map(m => m[0]);
+    const cards = [
+      ...html.matchAll(/<a\s+class="event-row"[\s\S]*?<\/a>/g),
+    ].map((m) => m[0]);
     assert.equal(cards.length, 17, `${file}: every hosting credit is present`);
-    assert.ok(cards.every(card => /<img\b/.test(card)), `${file}: every credit needs a visual`);
-    assert.equal(cards.filter(card => card.includes("portrait-visual")).length, 6, `${file}: unverified photographs must be labeled portraits`);
+    assert.ok(
+      cards.every((card) => /<img\b/.test(card)),
+      `${file}: every credit needs a visual`,
+    );
+    assert.equal(
+      cards.filter((card) => card.includes("portrait-visual")).length,
+      3,
+      `${file}: unverified photographs must be labeled portraits`,
+    );
+  }
+  const ogImage = html.match(/property="og:image" content="([^"]+)"/)?.[1];
+  assert.ok(
+    ogImage?.startsWith(`https://thomasdlynn.dev${base}/social/`),
+    `${file}: branded OG image`,
+  );
+  assert.ok(
+    (
+      await stat(
+        path.join("dist", new URL(ogImage).pathname.slice(base.length)),
+      )
+    ).isFile(),
+  );
+  assert.match(html, /property="og:image:width" content="1200"/);
+  assert.match(html, /property="og:image:height" content="630"/);
+  assert.match(html, /name="twitter:image:alt"/);
+  if (file === "dist/index.html" || file === "dist/th/index.html") {
+    const mediaFiles = files.filter((f) => f.endsWith(".mp4"));
+    assert.equal(mediaFiles.length, 12, "Every supplied clip has a web copy");
+    assert.equal(
+      (html.match(/<template id="video-/g) || []).length,
+      mediaFiles.length,
+    );
+    assert.equal(
+      (html.match(/class="video-card"/g) || []).length,
+      mediaFiles.length,
+    );
+    assert.equal(
+      (html.match(/preload="none"/g) || []).length,
+      mediaFiles.length,
+    );
+    assert.ok(
+      !/<video[^>]*autoplay/.test(html),
+      "No automatic video downloads",
+    );
   }
   assert.match(html, /class="theme-toggle"/);
   assert.match(html, /id="menu-dialog"/);
   assert.match(html, /https:\/\/www.tiktok.com\/@keewadun/);
   assert.match(html, /tel:\+66969769369/);
-  for (const [, url] of html.matchAll(/(?:href|src)="([^"#]+)"/g)) {
+  for (const [, url] of html.matchAll(/(?:href|src|poster)="([^"#]+)"/g)) {
     if (!url.startsWith(base + "/")) continue;
     const local = url.split("#")[0].split("?")[0].slice(base.length);
     const target = path.join(

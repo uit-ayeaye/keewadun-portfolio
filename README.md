@@ -1,6 +1,6 @@
 # DADA — Kunwadee Phanompotivong
 
-A bilingual Astro 7 + TypeScript portfolio, with Motion animations, 17 source-backed hosting stories in English and Thai, event preview dialogs, full photograph lightboxes, and a contact dialog. All 17 credits now have visual cards: 11 verified event photographs and 6 clearly labeled portrait placeholders, approved by the commissioning user.
+A bilingual Astro 7 + TypeScript portfolio, with Motion animations, 17 source-backed hosting stories in English and Thai, event preview dialogs, full photograph lightboxes, and a contact dialog. All 17 credits have visual cards: 11 portfolio photographs, 3 stills from supplied event videos, and 3 clearly labeled portrait placeholders. A bilingual video library includes all 12 supplied clips.
 
 **Live:** https://thomasdlynn.dev/keewadun-portfolio/
 
@@ -32,7 +32,7 @@ npm test        # Recheck the generated routes, metadata and internal links
 - `src/assets`: original portfolio photographs; Astro builds responsive WebP variants.
 - `scripts/verify-build.mjs`: checks all generated HTML pages, sitemap count, JSON-LD and local href/src targets.
 
-The main content and event links work without JavaScript. Real `/th/` URLs preserve the same event and section anchor when changing language. Light/dark mode follows the system initially, then remembers an explicit visitor choice across pages and languages. The mobile/tablet menu is a native modal dialog with focus containment, Escape dismissal, focus restoration, and scroll locking. No API keys, tracking, remote fonts, runtime framework hydration or backend are needed. The JavaScript bundle is approximately 21 KB gzipped. Images below the fold load lazily; the main portrait loads eagerly with explicit dimensions and responsive candidates. Motion uses transform/opacity and respects reduced motion. Copying email is user initiated; contact links never send a message automatically.
+The main content and event links work without JavaScript. Real `/th/` URLs preserve the same event and section anchor when changing language. Light/dark mode follows the system initially, then remembers an explicit visitor choice across pages and languages. The mobile/tablet menu is a native modal dialog with focus containment, Escape dismissal, focus restoration, and scroll locking. No API keys, tracking, remote fonts, runtime framework hydration or backend are needed. Video files are H.264/AAC MP4s with fast-start metadata and original audio, totaling approximately 98 MiB. Inert templates prevent video requests until a visitor selects a clip; closing its native dialog stops playback and releases the source. Images below the fold load lazily; the main portrait loads eagerly with explicit dimensions and responsive candidates. Motion uses transform/opacity and respects reduced motion. Copying email is user initiated; contact links never send a message automatically.
 
 ## SEO and deployment
 
@@ -55,7 +55,23 @@ The design is an editorial interpretation of her burgundy portrait and rose-tone
 
 ## September 25 visual update
 
-- Responsive archive: one column on phones, two on tablets, three on desktop. Every event preview and detail page includes a photo or an explicitly labeled portrait placeholder.
+- Responsive archive: one column on phones, two on tablets, three on desktop. Every event preview and detail page includes a photo, verified video still, or an explicitly labeled portrait placeholder.
 - Additional event photographs identified by visible stage signage: MFU Innovation Day 2026 and MFU Internship and Job Fair 2025, both from portfolio page 15. Additional gallery photos come from their event-specific portfolio pages.
-- Unmatched credits: Balloon Fiesta, THAIFEX, Grand Prix, Gymkhana, International Day of Yoga, InCIT/NCIT. Their portrait visuals are not claimed as event photographs. Thai Union booth photographs on page 14 were not assigned to THAIFEX without a clear event identifier.
-- Shared social/contact links: Instagram, TikTok, Facebook, LINE, public work phone, email, résumé, portfolio and Linktree video-sample request. Facebook’s Linktree destination resolves to `https://www.facebook.com/KunwadeeD`; TikTok resolves to `https://www.tiktok.com/@keewadun`. The video sample request requires a visitor’s name/email on Linktree; no information was submitted.
+- Unmatched credits: Gymkhana, International Day of Yoga, InCIT/NCIT. Their portrait visuals are not claimed as event photographs. Thai Union booth photographs on page 14 were not assigned to THAIFEX without a clear event identifier.
+- Shared social/contact links: Instagram, TikTok, Facebook, LINE, public work phone, email, résumé, portfolio and Linktree video-sample request. Facebook’s Linktree destination resolves to `https://www.facebook.com/KunwadeeD`; TikTok resolves to `https://www.tiktok.com/@keewadun`. The supplied videos now play directly on the website; contact-dialog video links point to the local library.
+
+
+## Video and visual refresh — September 25, 2026
+
+The user supplied `Dada’s Work Samples VDO` (12 originals, about 1 GB). All clips were inspected using video frames and filenames, with event names cross-checked against the original portfolio and résumé PDFs. The originals remain outside Git; all twelve full-length web copies and posters are in `public/media/`. No clip was removed as a presumed duplicate.
+
+- HLLC: two clips; Four Lands Food Festival: two clips.
+- One clip each: Grand Prix of Chiang Mai Compak Sporting, MFU Innovation Day, THAIFEX/Thai Union, MFU Pride in You, graduation, Balloon Fiesta, Khan Toke.
+- JBL / Mahajak Mega Deal is a separate brand-presentation sample in the video library. It does not change the 17-credit document archive.
+- Compak Sporting identification is corroborated by the opening text visible in the supplied video. Three video stills replace the Balloon Fiesta, THAIFEX and Grand Prix portrait placeholders.
+- `src/data/videos.ts` preserves original filenames, durations, bilingual labels and event associations. Individual recording years are not inferred from upload timestamps.
+- Responsive video cards, category filters, accessible dialogs, focus restoration and no background playback. Direct MP4 links remain usable without JavaScript. Original audio is retained; no transcript or captions were supplied.
+- Rose-tinted layered shadows, outlined cards, dimmed/blurred dialog backdrops, spring interaction states, and a finite microphone arrival animation. Reduced-motion preferences are respected; the arrival flourish never covers or blocks content.
+- Eighteen branded JPEG social previews (homepage + 17 events), all 1200 × 630, use real source photographs. EN/TH routes share the corresponding image and retain localized metadata. Recreate with `node scripts/generate-social.mjs` on Node 22.18+; generated JPEGs are committed.
+
+Validation includes Astro/TypeScript checking, all 37 pages and internal assets, social metadata, every video template, browser playback for all 12 clips, mobile/tablet overflow, EN/TH navigation, filtering, Escape/focus restoration, light/dark persistence and reduced motion. Media were checked for H.264 video, AAC audio, original duration and fast-start atom order.
