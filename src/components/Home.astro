@@ -1,4 +1,5 @@
 ---
+import Doodles from "./Doodles.astro";
 import Icon from "./Icon.astro";
 import PreviewVideo from "./PreviewVideo.astro";
 import VideoGrid from "./VideoGrid.astro";
@@ -22,6 +23,7 @@ const { lang } = Astro.props as { lang: Lang };
 
 <Layout lang={lang}>
   <section class="hero wrap">
+    <Doodles class="doodle-corner" kind="star" />
     <div class="hero-copy">
       <p class="eyebrow hero-enter">
         KUNWADEE PHANOMPOTIVONG <span>↘</span>
@@ -451,6 +453,7 @@ const { lang } = Astro.props as { lang: Lang };
     </p>
   </section>
   <section class="section offstage">
+    <Doodles class="doodle-corner" kind="heart" />
     <div class="wrap offstage-grid">
       <div class="offstage-photo" data-reveal>
         <Photo
@@ -518,6 +521,8 @@ const { lang } = Astro.props as { lang: Lang };
     </div>
   </section>
   <section id="contact" class="section contact-section">
+    <Doodles class="doodle-corner" kind="orbit" />
+    <Doodles class="doodle-low" kind="heart" />
     <div class="wrap">
       <div class="contact-top">
         <p class="eyebrow">

@@ -16,9 +16,31 @@ async function walk(dir) {
 }
 const files = await walk("dist");
 const pages = files.filter((f) => f.endsWith(".html"));
-assert.equal(pages.length, 61, "Expected 60 bilingual pages plus a 404");
+assert.equal(
+  pages.length,
+  61,
+  "Expected 36 MC pages, 24 legacy redirects and a 404",
+);
 for (const file of pages) {
   const html = await readFile(file, "utf8");
+  if (file.includes("/cosplay/")) {
+    const route = file
+      .slice(5)
+      .replace("th/cosplay/", "th/")
+      .replace("cosplay/", "")
+      .replace("index.html", "");
+    assert.ok(
+      html.includes(
+        'rel="canonical" href="https://thomasdlynn.dev/kayyalis-cosplay/' +
+          route +
+          '"',
+      ),
+      file + " redirect canonical",
+    );
+    assert.match(html, /http-equiv="refresh"/);
+    assert.match(html, /noindex,follow/);
+    continue;
+  }
   assert.match(html, /<title>[^<]+<\/title>/);
   assert.match(html, /name="description"/);
   assert.match(html, /rel="canonical"/);
@@ -114,7 +136,7 @@ for (const file of pages) {
     JSON.parse(json);
 }
 const sitemap = await readFile("dist/sitemap.xml", "utf8");
-assert.equal((sitemap.match(/<loc>/g) || []).length, 60);
+assert.equal((sitemap.match(/<loc>/g) || []).length, 36);
 const js = files.filter((f) => f.endsWith(".js"));
 const jsBytes = (
   await Promise.all(js.map(async (f) => (await stat(f)).size))
@@ -122,7 +144,7 @@ const jsBytes = (
 console.log(
   JSON.stringify({
     pages: pages.length,
-    sitemapURLs: 60,
+    sitemapURLs: 36,
     internalLinks: "passed",
     structuredData: "valid JSON",
     javascriptBytes: jsBytes,

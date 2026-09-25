@@ -3,7 +3,7 @@ import clips from "./cosplay-videos.json";
 import { base, type Lang } from "./portfolio";
 export { photos, clips };
 export const cosplayHome = (lang: Lang) =>
-  `${base}/${lang === "th" ? "th/" : ""}cosplay/`;
+  `/kayyalis-cosplay/${lang === "th" ? "th/" : ""}`;
 export const characterPath = (lang: Lang, id: string) =>
   `${cosplayHome(lang)}${id}/`;
 export const photoURL = (id: string, small = false) =>

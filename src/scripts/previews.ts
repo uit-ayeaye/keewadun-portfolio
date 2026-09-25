@@ -1,5 +1,5 @@
 /** Silent six-second previews. Only two visible cards can play at once. */
-export function initPreviews() {
+export function initPreviews(signal?: AbortSignal) {
   const reduced = matchMedia("(prefers-reduced-motion: reduce)");
   const connection = (
     navigator as Navigator & {
@@ -25,6 +25,7 @@ export function initPreviews() {
   const th = document.documentElement.lang === "th";
   let suspended = false;
   function refresh() {
+    if (signal?.aborted) return;
     const restricted = reduced.matches || constrained();
     const enabled = !paused && !restricted;
     buttons.forEach((button) => {
@@ -91,44 +92,65 @@ export function initPreviews() {
     { threshold: [0, 0.35, 0.6, 0.9, 1] },
   );
   clips.forEach((video) => {
-    video.addEventListener("playing", () => {
-      if (
-        paused ||
-        reduced.matches ||
-        constrained() ||
-        suspended ||
-        document.hidden ||
-        document.querySelector("dialog[open]") ||
-        (visibility.get(video) || 0) < 0.35
-      ) {
-        video.pause();
-        return;
-      }
-      video.classList.add("is-playing");
-    });
-    video.addEventListener("error", () => {
-      blocked.add(video);
-      video.classList.remove("is-playing");
-    });
+    video.addEventListener(
+      "playing",
+      () => {
+        if (
+          paused ||
+          reduced.matches ||
+          constrained() ||
+          suspended ||
+          document.hidden ||
+          document.querySelector("dialog[open]") ||
+          (visibility.get(video) || 0) < 0.35
+        ) {
+          video.pause();
+          return;
+        }
+        video.classList.add("is-playing");
+      },
+      { signal },
+    );
+    video.addEventListener(
+      "error",
+      () => {
+        blocked.add(video);
+        video.classList.remove("is-playing");
+      },
+      { signal },
+    );
     observer.observe(video);
   });
   buttons.forEach((button) =>
-    button.addEventListener("click", () => {
-      paused = !paused;
-      blocked.clear();
-      try {
-        localStorage.setItem("dada-previews-paused", paused ? "yes" : "no");
-      } catch {}
-      refresh();
-    }),
+    button.addEventListener(
+      "click",
+      () => {
+        paused = !paused;
+        blocked.clear();
+        try {
+          localStorage.setItem("dada-previews-paused", paused ? "yes" : "no");
+        } catch {}
+        refresh();
+      },
+      { signal },
+    ),
   );
-  reduced.addEventListener("change", refresh);
-  connection?.addEventListener("change", refresh);
-  document.addEventListener("visibilitychange", refresh);
+  reduced.addEventListener("change", refresh, { signal });
+  connection?.addEventListener("change", refresh, { signal });
+  document.addEventListener("visibilitychange", refresh, { signal });
   document
     .querySelectorAll("dialog")
-    .forEach((dialog) => dialog.addEventListener("close", refresh));
+    .forEach((dialog) => dialog.addEventListener("close", refresh, { signal }));
   refresh();
+  signal?.addEventListener(
+    "abort",
+    () => {
+      observer.disconnect();
+      clips.forEach((v) => v.pause());
+      visibility.clear();
+    },
+    { once: true },
+  );
   return {
     refresh,
     suspend() {

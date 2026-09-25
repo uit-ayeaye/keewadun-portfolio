@@ -1,4 +1,5 @@
 ---
+import Preferences from "../components/Preferences.astro";
 import "@fontsource-variable/manrope";
 import "@fontsource-variable/playfair-display";
 import "@fontsource-variable/noto-sans-thai";
@@ -105,21 +106,9 @@ const schema = {
 <!doctype html>
 <html lang={lang}>
   <head>
+    <Preferences />
     <meta charset="utf-8" />
-    <script is:inline>
-      (() => {
-        let theme;
-        try {
-          theme = localStorage.getItem("dada-theme");
-        } catch {}
-        document.documentElement.dataset.theme =
-          theme === "light" || theme === "dark"
-            ? theme
-            : matchMedia("(prefers-color-scheme: dark)").matches
-              ? "dark"
-              : "light";
-      })();
-    </script>
+
     <meta name="color-scheme" content="light dark" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{title}</title>
@@ -250,6 +239,7 @@ const schema = {
           <button
             type="button"
             class="theme-toggle"
+            data-theme-toggle
             aria-pressed="false"
             aria-label={t(lang, "Dark mode", "โหมดมืด")}
           >

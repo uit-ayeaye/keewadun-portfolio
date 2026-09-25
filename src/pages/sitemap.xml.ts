@@ -1,12 +1,6 @@
-import { characters, cosplayHome, characterPath } from "../data/cosplay";
 import { events, home, eventPath, origin } from "../data/portfolio";
 export function GET() {
   const routes = [
-    { en: cosplayHome("en"), th: cosplayHome("th") },
-    ...characters.map((c) => ({
-      en: characterPath("en", c.id),
-      th: characterPath("th", c.id),
-    })),
     { en: home("en"), th: home("th") },
     ...events.map((e) => ({
       en: eventPath("en", e.id),
