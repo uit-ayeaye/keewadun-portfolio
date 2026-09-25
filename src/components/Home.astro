@@ -229,7 +229,7 @@ const { lang } = Astro.props as { lang: Lang };
               <a
                 class="work-image-link"
                 href={eventPath(lang, e.id)}
-                data-preview={e.id}
+                data-astro-reload data-preview={e.id}
                 aria-label={t(lang, `Preview ${e.en}`, `ดูตัวอย่าง ${e.th}`)}
               >
                 <Photo
@@ -400,7 +400,7 @@ const { lang } = Astro.props as { lang: Lang };
         <a
           class="event-row"
           href={eventPath(lang, e.id)}
-          data-preview={e.id}
+          data-astro-reload data-preview={e.id}
           data-category={e.category}
           data-search={`${e.en} ${e.th} ${e.year}`}
         >
@@ -561,7 +561,7 @@ const { lang } = Astro.props as { lang: Lang };
         <a
           class="button lime"
           href="mailto:wwkunwadee05@gmail.com"
-          data-contact
+          data-astro-reload data-contact
         >
           {t(lang, "Let’s make something happen", "เริ่มต้นร่วมงานกัน")}{" "}
           <span>↗</span>

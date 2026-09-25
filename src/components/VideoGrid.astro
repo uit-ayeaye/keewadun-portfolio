@@ -11,7 +11,7 @@ const { clips, lang } = Astro.props as { clips: VideoClip[]; lang: Lang };
       <a
         class="video-poster"
         href={videoURL(clip)}
-        data-video={clip.id}
+        data-astro-reload data-video={clip.id}
         aria-label={`${t(lang, "Watch", "ชม")} ${clip[lang]} · ${duration(clip)}`}
       >
         <img
@@ -40,7 +40,7 @@ const { clips, lang } = Astro.props as { clips: VideoClip[]; lang: Lang };
       <div class="video-card-copy">
         <p class="eyebrow">{categories[clip.category][lang]}</p>
         <h3>
-          <a href={videoURL(clip)} data-video={clip.id}>
+          <a href={videoURL(clip)} data-astro-reload data-video={clip.id}>
             {clip[lang]}
           </a>
         </h3>

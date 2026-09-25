@@ -47,6 +47,7 @@ for (const file of pages) {
   assert.match(html, /hreflang="th"/);
   assert.match(html, /type="application\/ld\+json"/);
   assert.equal((html.match(/<h1\b/g) || []).length, 1, `${file}: one h1`);
+  for (const [, tag] of html.matchAll(/(<a\b[^>]*\bdata-video=[^>]*>)/g)) assert.ok(tag.includes('data-astro-reload'), 'Video popup triggers must bypass the page router');
   if (file === "dist/index.html" || file === "dist/th/index.html") {
     const cards = [
       ...html.matchAll(/<a\s+class="event-row"[\s\S]*?<\/a>/g),

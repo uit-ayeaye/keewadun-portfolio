@@ -55,7 +55,7 @@ const clips = videosFor(e.id);
     <div class="event-cover wrap" data-reveal>
       <button
         type="button"
-        data-lightbox
+        data-astro-reload data-lightbox
         aria-label={t(lang, "View full photograph", "ดูภาพขนาดเต็ม")}
       >
         <Photo
@@ -174,7 +174,7 @@ const clips = videosFor(e.id);
         {t(lang, "Your moment,", "ช่วงเวลาของคุณ")}{" "}
         <em>{t(lang, "next?", "ต่อไปไหม?")}</em>
       </h2>
-      <a class="button lime" href="mailto:wwkunwadee05@gmail.com" data-contact>
+      <a class="button lime" href="mailto:wwkunwadee05@gmail.com" data-astro-reload data-contact>
         {t(lang, "Let’s talk", "มาคุยกัน")} <span>↗</span>
       </a>
     </div>
