@@ -25,6 +25,16 @@ for (const file of pages) {
   assert.match(html, /hreflang="th"/);
   assert.match(html, /type="application\/ld\+json"/);
   assert.equal((html.match(/<h1\b/g) || []).length, 1, `${file}: one h1`);
+  if (file === "dist/index.html" || file === "dist/th/index.html") {
+    const cards = [...html.matchAll(/<a\s+class="event-row"[\s\S]*?<\/a>/g)].map(m => m[0]);
+    assert.equal(cards.length, 17, `${file}: every hosting credit is present`);
+    assert.ok(cards.every(card => /<img\b/.test(card)), `${file}: every credit needs a visual`);
+    assert.equal(cards.filter(card => card.includes("portrait-visual")).length, 6, `${file}: unverified photographs must be labeled portraits`);
+  }
+  assert.match(html, /class="theme-toggle"/);
+  assert.match(html, /id="menu-dialog"/);
+  assert.match(html, /https:\/\/www.tiktok.com\/@keewadun/);
+  assert.match(html, /tel:\+66969769369/);
   for (const [, url] of html.matchAll(/(?:href|src)="([^"#]+)"/g)) {
     if (!url.startsWith(base + "/")) continue;
     const local = url.split("#")[0].split("?")[0].slice(base.length);

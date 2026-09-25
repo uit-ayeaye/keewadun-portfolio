@@ -1,5 +1,6 @@
 ---
 import Layout from "../layouts/Layout.astro";
+import EventVisual from "./EventVisual.astro";
 import Photo from "./Photo.astro";
 import {
   events,
@@ -66,10 +67,15 @@ const desc = description(e, lang);
       </button>
     </div>
   ) : (
-    <div class="event-type-art wrap" aria-hidden="true">
-      <span>ON THE MIC.</span>
-      <em>Dada</em>
-      <span>✳</span>
+    <div class="event-cover wrap placeholder-cover">
+      <EventVisual event={e} lang={lang} hero />
+      <p class="source-note">
+        {t(
+          lang,
+          "This hosting credit is listed in the résumé. This portrait is a visual placeholder; an event photograph has not yet been verified.",
+          "ผลงานนี้ระบุไว้ในเรซูเม่ ภาพบุคคลนี้ใช้เป็นภาพประกอบชั่วคราว ยังไม่ได้ยืนยันภาพจากงาน",
+        )}
+      </p>
     </div>
   )}
   <section class="section wrap story-grid">
@@ -115,14 +121,28 @@ const desc = description(e, lang);
       </div>
     </div>
   </section>
-  {e.id === "pride" && (
-    <section class="wrap extra-photo" data-reveal>
-      <Photo
-        name="pride-2025.jpg"
-        alt={t(lang, "MFU Pride in You 2025", "MFU Pride in You 2025")}
-        sizes="(max-width: 700px) 90vw, 75vw"
-      />
-      <p>MFU PRIDE IN YOU · 2025</p>
+  {e.gallery && (
+    <section
+      class="wrap event-gallery"
+      aria-label={t(
+        lang,
+        "More from the portfolio",
+        "ภาพเพิ่มเติมจากพอร์ตโฟลิโอ",
+      )}
+    >
+      <h2>{t(lang, "A closer look.", "อีกมุมของเรื่องราว")}</h2>
+      {e.gallery.map((name) => (
+        <figure>
+          <Photo
+            name={name}
+            alt={e.id === "pride" ? "MFU Pride 2025" : e[lang]}
+            sizes="(max-width: 700px) 90vw, 70vw"
+          />
+          <figcaption>
+            {e.id === "pride" ? "MFU PRIDE · 2025" : e[lang]}
+          </figcaption>
+        </figure>
+      ))}
     </section>
   )}
   <section class="next-story wrap" data-reveal>

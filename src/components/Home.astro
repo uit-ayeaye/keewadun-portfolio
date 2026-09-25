@@ -1,5 +1,7 @@
 ---
 import Layout from "../layouts/Layout.astro";
+import EventVisual from "./EventVisual.astro";
+import SocialLinks from "./SocialLinks.astro";
 import Photo from "./Photo.astro";
 import EventPreview from "./EventPreview.astro";
 import {
@@ -316,6 +318,7 @@ const { lang } = Astro.props as { lang: Lang };
           data-category={e.category}
           data-search={`${e.en} ${e.th} ${e.year}`}
         >
+          <EventVisual event={e} lang={lang} />
           <span class="event-number">{String(index + 1).padStart(2, "0")}</span>
           <span class="event-title">
             {e[lang]}
@@ -345,8 +348,8 @@ const { lang } = Astro.props as { lang: Lang };
     <p class="source-note">
       {t(
         lang,
-        "From Dada’s published portfolio. A dash means the year was not listed.",
-        "อ้างอิงจากพอร์ตโฟลิโอของ Dada เครื่องหมายขีดหมายถึงไม่ได้ระบุปี",
+        "11 events have matched portfolio photos. Six use labeled portraits while event photos are awaited. A dash means the year was not listed.",
+        "11 ผลงานมีภาพตรงกับงาน อีก 6 ผลงานใช้ภาพบุคคลพร้อมป้ายกำกับระหว่างรอภาพจากงาน เครื่องหมายขีดหมายถึงไม่ได้ระบุปี",
       )}
     </p>
   </section>
@@ -462,7 +465,9 @@ const { lang } = Astro.props as { lang: Lang };
           <span>↗</span>
         </a>
       </div>
+      <SocialLinks lang={lang} />
       <div class="direct-contact">
+        <a href="tel:+66969769369">096-976-9369 ↗</a>
         <a
           href="https://line.me/ti/p/iLlNAWNNnR"
           target="_blank"

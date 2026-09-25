@@ -1,0 +1,16 @@
+---
+import { socials, t, type Lang } from "../data/portfolio";
+const { lang } = Astro.props as { lang: Lang };
+---
+
+<div
+  class="social-links"
+  aria-label={t(lang, "Social & contact links", "โซเชียลและช่องทางติดต่อ")}
+>
+  {socials.map((s) => (
+    <a href={s.url} target="_blank" rel="noopener noreferrer">
+      <span>{s.label}</span>
+      <span aria-hidden="true">↗</span>
+    </a>
+  ))}
+</div>

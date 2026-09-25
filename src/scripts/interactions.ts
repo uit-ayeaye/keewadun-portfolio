@@ -2,28 +2,72 @@ import { animate, inView, stagger } from "motion";
 const lang = document.documentElement.lang;
 const t = (en: string, th: string) => (lang === "th" ? th : en);
 const reduced = window.matchMedia("(prefers-reduced-motion: reduce)");
-const menu = document.querySelector<HTMLElement>(".main-nav");
+const menu = document.querySelector<HTMLDialogElement>("#menu-dialog");
 const menuButton = document.querySelector<HTMLButtonElement>(".menu-toggle");
 function closeMenu() {
-  menu?.classList.remove("open");
-  menuButton?.setAttribute("aria-expanded", "false");
-  menuButton?.setAttribute("aria-label", t("Open menu", "เปิดเมนู"));
+  if (menu?.open) menu.close();
 }
 menuButton?.addEventListener("click", () => {
-  const open = menuButton.getAttribute("aria-expanded") !== "true";
-  menu?.classList.toggle("open", open);
-  menuButton.setAttribute("aria-expanded", String(open));
-  menuButton.setAttribute(
-    "aria-label",
-    open ? t("Close menu", "ปิดเมนู") : t("Open menu", "เปิดเมนู"),
-  );
+  if (menu?.open) return closeMenu();
+  openDialog(menu);
+  menuButton.setAttribute("aria-expanded", "true");
 });
+menu?.addEventListener("close", () =>
+  menuButton?.setAttribute("aria-expanded", "false"),
+);
 menu
   ?.querySelectorAll("a")
   .forEach((a) => a.addEventListener("click", closeMenu));
-document.addEventListener("keydown", (e) => {
-  if (e.key === "Escape") closeMenu();
+window.matchMedia("(min-width: 1101px)").addEventListener("change", (e) => {
+  if (e.matches) closeMenu();
 });
+const themeButton = document.querySelector<HTMLButtonElement>(".theme-toggle");
+function syncTheme() {
+  themeButton?.setAttribute(
+    "aria-pressed",
+    String(document.documentElement.dataset.theme === "dark"),
+  );
+}
+syncTheme();
+themeButton?.addEventListener("click", () => {
+  const next =
+    document.documentElement.dataset.theme === "dark" ? "light" : "dark";
+  document.documentElement.dataset.theme = next;
+  try {
+    localStorage.setItem("dada-theme", next);
+  } catch {}
+  syncTheme();
+  if (!reduced.matches)
+    animate(
+      themeButton,
+      { scale: [1, 0.92, 1] },
+      { type: "spring", bounce: 0.4, duration: 0.5 },
+    );
+});
+window
+  .matchMedia("(prefers-color-scheme: dark)")
+  .addEventListener("change", (e) => {
+    let saved = null;
+    try {
+      saved = localStorage.getItem("dada-theme");
+    } catch {}
+    if (!saved) {
+      document.documentElement.dataset.theme = e.matches ? "dark" : "light";
+      syncTheme();
+    }
+  });
+function syncLanguageLinks() {
+  document
+    .querySelectorAll<HTMLAnchorElement>(".language-switch a")
+    .forEach((a) => {
+      const url = new URL(a.href);
+      url.hash = location.hash;
+      url.search = location.search;
+      a.href = url.href;
+    });
+}
+syncLanguageLinks();
+window.addEventListener("hashchange", syncLanguageLinks);
 function openDialog(dialog: HTMLDialogElement | null) {
   if (!dialog) return;
   closeMenu();

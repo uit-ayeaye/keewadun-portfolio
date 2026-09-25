@@ -8,6 +8,7 @@ export interface EventCredit {
   category: Category;
   image?: string;
   page: number;
+  gallery?: string[];
   description?: Record<Lang, string>;
 }
 export const portfolioURL =
@@ -40,6 +41,7 @@ export const events: EventCredit[] = [
     year: "—",
     category: "festival",
     image: "safe-food.jpg",
+    gallery: ["safe-food-stage.png"],
     page: 5,
     description: {
       en: "On-stage hosting for the fifth edition of Chiang Rai’s safe food event.",
@@ -111,6 +113,7 @@ export const events: EventCredit[] = [
     year: "—",
     category: "campus",
     image: "life-as-a-teen.jpg",
+    gallery: ["life-teen-talk.jpg"],
     page: 7,
     description: {
       en: "A conversation on stage with special guest Ticha, featured in Dada’s hosting portfolio.",
@@ -119,19 +122,21 @@ export const events: EventCredit[] = [
   },
   {
     id: "innovation",
+    image: "innovation-day.png",
     en: "MFU Innovation Day",
     th: "MFU Innovation Day",
     year: "2026",
     category: "campus",
-    page: 3,
+    page: 15,
   },
   {
     id: "job-fair",
+    image: "job-fair.png",
     en: "MFU Internship and Job Fair",
     th: "MFU Internship and Job Fair",
     year: "2025",
     category: "campus",
-    page: 3,
+    page: 15,
   },
   {
     id: "pride",
@@ -140,6 +145,7 @@ export const events: EventCredit[] = [
     year: "2025, 2026",
     category: "campus",
     image: "pride-2026.jpg",
+    gallery: ["pride-2025.jpg"],
     page: 8,
     description: {
       en: "Hosting at MFU Pride in 2025 and 2026. This photograph is from the 2026 stage.",
@@ -153,6 +159,7 @@ export const events: EventCredit[] = [
     year: "2024, 2025",
     category: "campus",
     image: "hllc.png",
+    gallery: ["hllc-stage.png"],
     page: 12,
     description: {
       en: "Opening-ceremony hosting, with 2024 and 2025 credits listed in her portfolio.",
@@ -179,6 +186,7 @@ export const events: EventCredit[] = [
     year: "2024, 2025",
     category: "campus",
     image: "homage.jpg",
+    gallery: ["homage-stage.jpg"],
     page: 10,
     description: {
       en: "Ceremonial hosting on the occasion of graduation, paying homage to Her Royal Highness Princess Srinagarindra.",
@@ -224,3 +232,28 @@ export const description = (e: EventCredit, lang: Lang) =>
     `${e.en}${e.year === "—" ? "" : ` (${e.year})`} is one of Dada’s published hosting credits. Explore the original portfolio for her full experience.`,
     `${e.th}${e.year === "—" ? "" : ` (${e.year})`} เป็นหนึ่งในผลงานพิธีกรที่ระบุในพอร์ตโฟลิโอของ Dada ดูประสบการณ์เพิ่มเติมได้ในพอร์ตโฟลิโอฉบับเต็ม`,
   );
+
+export const socials = [
+  {
+    label: "Instagram",
+    handle: "@keewadun",
+    url: "https://www.instagram.com/keewadun/",
+  },
+  {
+    label: "TikTok",
+    handle: "@keewadun",
+    url: "https://www.tiktok.com/@keewadun",
+  },
+  {
+    label: "Facebook",
+    handle: "Dady Kunwadee",
+    url: "https://www.facebook.com/KunwadeeD",
+  },
+  {
+    label: "LINE",
+    handle: "Let’s talk",
+    url: "https://line.me/ti/p/iLlNAWNNnR",
+  },
+];
+export const resumeURL =
+  "https://drive.google.com/file/d/1Ul89mVOEIkb7XQD8qq0aTuRZPu94k14Z/view";

@@ -1,0 +1,42 @@
+---
+import Photo from "./Photo.astro";
+import { t, type EventCredit, type Lang } from "../data/portfolio";
+const {
+  event,
+  lang,
+  hero = false,
+} = Astro.props as { event: EventCredit; lang: Lang; hero?: boolean };
+---
+
+<figure
+  class:list={[
+    "event-visual",
+    `visual-${event.category}`,
+    { "portrait-visual": !event.image },
+  ]}
+>
+  <Photo
+    name={event.image || "dada-portrait.jpg"}
+    alt={
+      event.image
+        ? event[lang]
+        : t(
+            lang,
+            "Dada — portrait, not a photograph of this event",
+            "ภาพบุคคลของ Dada ไม่ใช่ภาพจากงานนี้",
+          )
+    }
+    hero={hero}
+    sizes="(max-width: 650px) 90vw, (max-width: 1000px) 44vw, 30vw"
+  />
+  {!event.image && (
+    <>
+      <span class="visual-orbit" aria-hidden="true">
+        ✳
+      </span>
+      <figcaption>
+        {t(lang, "PORTRAIT · EVENT PHOTO TO COME", "ภาพบุคคล · รอภาพจากงาน")}
+      </figcaption>
+    </>
+  )}
+</figure>

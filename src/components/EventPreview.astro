@@ -1,5 +1,5 @@
 ---
-import Photo from "./Photo.astro";
+import EventVisual from "./EventVisual.astro";
 import {
   categories,
   description,
@@ -12,14 +12,8 @@ const { event, lang } = Astro.props as { event: EventCredit; lang: Lang };
 ---
 
 <template id={`preview-${event.id}`}>
-  <div class:list={["preview-layout", { "no-photo": !event.image }]}>
-    {event.image && (
-      <Photo
-        name={event.image}
-        alt={event[lang]}
-        sizes="(max-width: 700px) 90vw, 440px"
-      />
-    )}
+  <div class="preview-layout">
+    <EventVisual event={event} lang={lang} />
     <div class="preview-copy">
       <p class="eyebrow">
         {categories[event.category][lang]}{" "}
