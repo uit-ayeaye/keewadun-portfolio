@@ -1,0 +1,502 @@
+---
+import Layout from "../layouts/Layout.astro";
+import Photo from "./Photo.astro";
+import EventPreview from "./EventPreview.astro";
+import {
+  events,
+  featured,
+  categories,
+  portfolioURL,
+  t,
+  eventPath,
+  type Lang,
+} from "../data/portfolio";
+const { lang } = Astro.props as { lang: Lang };
+---
+
+<Layout lang={lang}>
+  <section class="hero wrap">
+    <div class="hero-copy">
+      <p class="eyebrow hero-enter">
+        KUNWADEE PHANOMPOTIVONG <span>↘</span>
+      </p>
+      <div class="hello-tag hero-enter">
+        {t(lang, "Hi, I’m Dada ☺", "สวัสดี ฉันชื่อ Dada ☺")}
+      </div>
+      <h1 class="hero-enter">
+        <span>{t(lang, "Your story.", "เรื่องราวของคุณ")}</span>
+        <br />
+        <em>{t(lang, "My mic.", "ไมค์ของฉัน")}</em>
+        <br />
+        <span>{t(lang, "A little magic.", "ความพิเศษของเรา")}</span>
+        <span class="title-spark" aria-hidden="true">
+          ✳
+        </span>
+      </h1>
+      <p class="hero-description hero-enter">
+        {t(
+          lang,
+          "Thai–English MC, creator, and a people person. Bringing warmth, a little wit, and a whole lot of heart to every stage.",
+          "พิธีกรไทย–อังกฤษ ครีเอเตอร์ และคนที่ชอบพบปะผู้คน พร้อมส่งต่อความอบอุ่น รอยยิ้ม และความตั้งใจให้กับทุกเวที",
+        )}
+      </p>
+      <div class="hero-actions hero-enter">
+        <a href="#work" class="button">
+          {t(lang, "Meet me on stage", "พบกันบนเวที")} <span>↗</span>
+        </a>
+        <a href="#about" class="quiet-link">
+          {t(lang, "Get to know me", "รู้จักกันอีกนิด")} <span>↓</span>
+        </a>
+      </div>
+      <div class="hero-footnote hero-enter">
+        <span class="little-line"></span> THAI + ENGLISH <span>·</span> BKK /
+        CNX / CEI
+      </div>
+    </div>
+    <div class="hero-art">
+      <div class="portrait-mat">
+        <Photo
+          name="dada-portrait.jpg"
+          alt={t(
+            lang,
+            "Dada holding a microphone in a burgundy evening dress",
+            "Dada ถือไมโครโฟนในชุดราตรีสีเบอร์กันดี",
+          )}
+          hero
+          sizes="(max-width: 700px) 85vw, 43vw"
+        />
+        <div class="photo-caption">
+          <span>Dada, on the mic.</span>
+          <span>♡</span>
+        </div>
+      </div>
+      <div class="floating-sticker sticker-language">
+        <span>TH ↔ EN</span>
+        <small>
+          {t(lang, "two languages, one connection", "สองภาษา หนึ่งความเข้าใจ")}
+        </small>
+      </div>
+      <div class="floating-sticker sticker-note">
+        <span aria-hidden="true">✳</span>
+        <p>
+          {t(lang, "A little stage presence.", "พลังเล็ก ๆ บนเวที")}
+          <br />
+          <em>{t(lang, "A whole lot of heart.", "ความตั้งใจเต็มหัวใจ")}</em>
+        </p>
+      </div>
+      <span class="orbit-spark" aria-hidden="true">
+        ✳
+      </span>
+    </div>
+  </section>
+  <div
+    class="ribbon"
+    aria-label={t(
+      lang,
+      "MC, creator, voice actor and cosmetic science student",
+      "พิธีกร ครีเอเตอร์ นักพากย์เสียง และนักศึกษาวิทยาศาสตร์เครื่องสำอาง",
+    )}
+  >
+    <div class="ribbon-content">
+      <span>{t(lang, "Bilingual MC", "พิธีกรสองภาษา")}</span>
+      <span aria-hidden="true">✳</span>
+      <span>{t(lang, "Content creator", "คอนเทนต์ครีเอเตอร์")}</span>
+      <span aria-hidden="true">✳</span>
+      <span>{t(lang, "Voice actor", "นักพากย์เสียง")}</span>
+      <span aria-hidden="true">✳</span>
+      <span>{t(lang, "Curious by nature", "เรียนรู้ด้วยความสงสัย")}</span>
+    </div>
+  </div>
+  <section id="about" class="section wrap about">
+    <div class="about-heading" data-reveal>
+      <p class="eyebrow">
+        01 / {t(lang, "THE PERSON BEHIND THE MIC", "ตัวตนเบื้องหลังไมโครโฟน")}
+      </p>
+      <h2>
+        {t(lang, "A science mind.", "เรียนรู้ผ่านวิทยาศาสตร์")}
+        <br />
+        <em>{t(lang, "A storyteller’s heart.", "สื่อสารด้วยหัวใจ")}</em>
+      </h2>
+      <p>
+        {t(
+          lang,
+          "A little curious, a little creative, and always ready for a good conversation.",
+          "ช่างสงสัย รักความคิดสร้างสรรค์ และพร้อมเสมอสำหรับบทสนทนาดี ๆ",
+        )}
+      </p>
+      <a
+        class="text-link"
+        href={portfolioURL}
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        {t(lang, "The full portfolio", "พอร์ตโฟลิโอฉบับเต็ม")} ↗
+      </a>
+    </div>
+    <div class="about-mosaic">
+      <article class="about-card lavender" data-reveal>
+        <span class="card-kicker">01 / {t(lang, "ON STAGE", "บนเวที")}</span>
+        <span class="card-symbol" aria-hidden="true">
+          ↗
+        </span>
+        <h3>{t(lang, "Reading the room.", "สื่อสารให้ตรงใจ")}</h3>
+        <p>
+          {t(
+            lang,
+            "Formal ceremonies, festival crowds, and conversations in between. A hosting style that moves with the moment.",
+            "ตั้งแต่พิธีการ เทศกาล ไปจนถึงบทสนทนา ปรับการดำเนินรายการให้เหมาะกับทุกบรรยากาศ",
+          )}
+        </p>
+        <div class="mini-pills">
+          <span>TH</span>
+          <span>EN</span>
+          <span>MC</span>
+        </div>
+      </article>
+      <article class="about-card pink" data-reveal>
+        <span class="card-kicker">02 / {t(lang, "OFF STAGE", "นอกเวที")}</span>
+        <span class="card-symbol" aria-hidden="true">
+          ✳
+        </span>
+        <h3>
+          {t(
+            lang,
+            "Curiosity, in practice.",
+            "เปลี่ยนความสงสัยเป็นการเรียนรู้",
+          )}
+        </h3>
+        <p>
+          {t(
+            lang,
+            "Senior year, School of Cosmetic Science, Mae Fah Luang University. A different kind of creativity, grounded in science.",
+            "นักศึกษาชั้นปีที่ 4 สำนักวิชาวิทยาศาสตร์เครื่องสำอาง มหาวิทยาลัยแม่ฟ้าหลวง อีกมุมของความคิดสร้างสรรค์ที่มีวิทยาศาสตร์เป็นพื้นฐาน",
+          )}
+        </p>
+        <span class="card-foot">MAE FAH LUANG UNIVERSITY</span>
+      </article>
+      <div class="about-note" data-reveal>
+        <span aria-hidden="true">♡</span>
+        <p>
+          {t(
+            lang,
+            "“Driven by passion, powered by the mic.”",
+            "“ขับเคลื่อนด้วยความหลงใหล ส่งพลังผ่านไมโครโฟน”",
+          )}
+          <small>— Dada</small>
+        </p>
+      </div>
+    </div>
+  </section>
+  <section id="work" class="section work-section">
+    <div class="wrap">
+      <div class="section-heading" data-reveal>
+        <div>
+          <p class="eyebrow">
+            02 / {t(lang, "THE HIGHLIGHT REEL", "ช่วงเวลาที่น่าจดจำ")}
+          </p>
+          <h2>
+            {t(lang, "Good people.", "ผู้คนดี ๆ")}
+            <br />
+            <em>{t(lang, "Unforgettable moments.", "ช่วงเวลาที่ไม่ลืม")}</em>
+          </h2>
+        </div>
+        <div class="section-aside">
+          <span class="handwritten">
+            {t(lang, "A few favorites ↙", "ผลงานบางส่วน ↙")}
+          </span>
+          <p>
+            {t(
+              lang,
+              "Tap a moment. Meet the story.",
+              "เลือกช่วงเวลา แล้วมารู้จักเรื่องราวด้วยกัน",
+            )}
+          </p>
+        </div>
+      </div>
+      <div class="work-grid">
+        {featured.map((id, index) => {
+          const e = events.find((e) => e.id === id)!;
+          return (
+            <article class="work-card" data-reveal>
+              <a
+                class="work-image-link"
+                href={eventPath(lang, e.id)}
+                data-preview={e.id}
+                aria-label={t(lang, `Preview ${e.en}`, `ดูตัวอย่าง ${e.th}`)}
+              >
+                <Photo
+                  name={e.image!}
+                  alt={e[lang]}
+                  sizes="(max-width: 560px) 90vw, (max-width: 1000px) 44vw, 29vw"
+                />
+                <span class="image-pill">
+                  {String(index + 1).padStart(2, "0")} /{" "}
+                  {t(lang, "ON THE MIC", "บนเวที")}
+                </span>
+                <span class="round-arrow" aria-hidden="true">
+                  ↗
+                </span>
+              </a>
+              <div class="work-card-copy">
+                <div class="work-meta">
+                  <span>{categories[e.category][lang]}</span>
+                  <span>{e.year === "—" ? "MC" : e.year}</span>
+                </div>
+                <h3>
+                  <a href={eventPath(lang, e.id)}>{e[lang]}</a>
+                </h3>
+              </div>
+            </article>
+          );
+        })}
+      </div>
+      <div class="work-footer" data-reveal>
+        <p>
+          {t(
+            lang,
+            "Every stage has a story. Here are a few of mine.",
+            "ทุกเวทีมีเรื่องราว และนี่คือบางส่วนของฉัน",
+          )}
+        </p>
+        <a href="#events" class="button outline">
+          {t(lang, "Explore all 17 credits", "ชมทั้ง 17 ผลงาน")} <span>↓</span>
+        </a>
+      </div>
+    </div>
+  </section>
+  <section id="events" class="section wrap archive">
+    <div class="section-heading" data-reveal>
+      <div>
+        <p class="eyebrow">
+          03 / {t(lang, "THE STAGE DIARY", "บันทึกจากเวที")}
+        </p>
+        <h2>
+          {t(lang, "Many stages.", "หลากหลายเวที")}{" "}
+          <em>{t(lang, "Always Dada.", "ในแบบ Dada")}</em>
+        </h2>
+      </div>
+      <span class="count-bubble">
+        17<small>{t(lang, "portfolio credits", "ผลงานในพอร์ต")}</small>
+      </span>
+    </div>
+    <div class="archive-controls">
+      <div
+        class="filters"
+        role="group"
+        aria-label={t(lang, "Filter events", "กรองผลงาน")}
+      >
+        <button type="button" data-filter="all" aria-pressed="true">
+          {t(lang, "Everything", "ทั้งหมด")}
+        </button>
+        {Object.entries(categories).map(([key, names]) => (
+          <button type="button" data-filter={key} aria-pressed="false">
+            {names[lang]}
+          </button>
+        ))}
+      </div>
+      <label class="search">
+        <span aria-hidden="true">⌕</span>
+        <input
+          type="search"
+          name="events"
+          placeholder={t(lang, "Find a moment…", "ค้นหาผลงาน…")}
+          aria-label={t(lang, "Search events", "ค้นหาผลงาน")}
+        />
+      </label>
+    </div>
+    <p class="archive-status" role="status" aria-live="polite">
+      {t(lang, "17 moments to explore", "17 ผลงานให้คุณได้รู้จัก")}
+    </p>
+    <div class="event-list">
+      {events.map((e, index) => (
+        <a
+          class="event-row"
+          href={eventPath(lang, e.id)}
+          data-preview={e.id}
+          data-category={e.category}
+          data-search={`${e.en} ${e.th} ${e.year}`}
+        >
+          <span class="event-number">{String(index + 1).padStart(2, "0")}</span>
+          <span class="event-title">
+            {e[lang]}
+            <small>{categories[e.category][lang]}</small>
+          </span>
+          <span class="event-year">{e.year}</span>
+          <span class="event-arrow" aria-hidden="true">
+            ↗
+          </span>
+        </a>
+      ))}
+    </div>
+    <div class="empty-state" hidden>
+      <span aria-hidden="true">✳</span>
+      <h3>{t(lang, "No moments found — yet.", "ยังไม่พบผลงานที่ค้นหา")}</h3>
+      <p>
+        {t(
+          lang,
+          "Try a different word or explore everything.",
+          "ลองใช้คำอื่น หรือดูผลงานทั้งหมด",
+        )}
+      </p>
+      <button class="button small" type="button" data-reset>
+        {t(lang, "Show all events", "แสดงทุกผลงาน")}
+      </button>
+    </div>
+    <p class="source-note">
+      {t(
+        lang,
+        "From Dada’s published portfolio. A dash means the year was not listed.",
+        "อ้างอิงจากพอร์ตโฟลิโอของ Dada เครื่องหมายขีดหมายถึงไม่ได้ระบุปี",
+      )}
+    </p>
+  </section>
+  <section class="section offstage">
+    <div class="wrap offstage-grid">
+      <div class="offstage-photo" data-reveal>
+        <Photo
+          name="pride-2026.jpg"
+          alt={t(
+            lang,
+            "Dada and her co-host at MFU Pride 2026",
+            "Dada และพิธีกรร่วมในงาน MFU Pride 2026",
+          )}
+          sizes="(max-width: 700px) 80vw, 35vw"
+        />
+        <div class="photo-caption">
+          <span>{t(lang, "In good company.", "ในช่วงเวลาดี ๆ")}</span>
+          <span>☺</span>
+        </div>
+        <span class="offstage-sticker">
+          {t(lang, "Life, unscripted.", "ชีวิตนอกสคริปต์")}
+        </span>
+      </div>
+      <div class="offstage-copy" data-reveal>
+        <p class="eyebrow">
+          04 / {t(lang, "AFTER THE APPLAUSE", "หลังเสียงปรบมือ")}
+        </p>
+        <h2>
+          {t(lang, "There’s more", "ยังมีเรื่องราว")}
+          <br />
+          <em>{t(lang, "between the moments.", "ระหว่างช่วงเวลา")}</em>
+        </h2>
+        <p>
+          {t(
+            lang,
+            "Event diaries. Behind-the-scenes bits. Everyday discoveries. A little window into the person holding the microphone.",
+            "บันทึกการทำงาน เบื้องหลังเวที และสิ่งใหม่ ๆ ในชีวิตประจำวัน มาทำความรู้จักคนถือไมโครโฟนให้มากขึ้นกัน",
+          )}
+        </p>
+        <a
+          class="social-tile"
+          href="https://www.instagram.com/keewadun/reel/DcvsXyethkS/"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <span>
+            <small>
+              {t(lang, "PRESS PLAY ON INSTAGRAM", "กดเล่นบน INSTAGRAM")}
+            </small>
+            <strong>{t(lang, "The emcee diaries", "บันทึกชีวิตพิธีกร")}</strong>
+          </span>
+          <span class="play-icon" aria-hidden="true">
+            ▷
+          </span>
+        </a>
+        <a
+          class="social-tile"
+          href="https://www.instagram.com/keewadun/"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <span>
+            <small>INSTAGRAM</small>
+            <strong>@keewadun</strong>
+          </span>
+          <span>↗</span>
+        </a>
+      </div>
+    </div>
+  </section>
+  <section id="contact" class="section contact-section">
+    <div class="wrap">
+      <div class="contact-top">
+        <p class="eyebrow">
+          {t(
+            lang,
+            "YOUR NEXT CHAPTER STARTS WITH HELLO",
+            "เริ่มเรื่องราวบทใหม่ด้วยคำว่าสวัสดี",
+          )}
+        </p>
+        <span class="contact-doodle" aria-hidden="true">
+          ✳
+        </span>
+      </div>
+      <h2 data-reveal>
+        {t(lang, "A great event starts", "งานที่น่าจดจำ")}
+        <br />
+        {t(lang, "with a", "เริ่มจาก")}{" "}
+        <em>{t(lang, "good connection.", "ความเข้าใจที่ดี")}</em>
+      </h2>
+      <div class="contact-bottom">
+        <p>
+          {t(
+            lang,
+            "Let’s give your next moment a voice.",
+            "มาสร้างเสียงให้ช่วงเวลาพิเศษของคุณกัน",
+          )}
+          <br />
+          <span>
+            {t(
+              lang,
+              "Hosting · Content · Voice work",
+              "พิธีกร · คอนเทนต์ · งานเสียง",
+            )}
+          </span>
+        </p>
+        <a
+          class="button lime"
+          href="mailto:wwkunwadee05@gmail.com"
+          data-contact
+        >
+          {t(lang, "Let’s make something happen", "เริ่มต้นร่วมงานกัน")}{" "}
+          <span>↗</span>
+        </a>
+      </div>
+      <div class="direct-contact">
+        <a
+          href="https://line.me/ti/p/iLlNAWNNnR"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          LINE ↗
+        </a>
+        <a href="mailto:wwkunwadee05@gmail.com">wwkunwadee05@gmail.com ↗</a>
+        <a
+          href="https://drive.google.com/file/d/1Ul89mVOEIkb7XQD8qq0aTuRZPu94k14Z/view"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          {t(lang, "Résumé", "เรซูเม่")} ↗
+        </a>
+      </div>
+    </div>
+  </section>
+  <dialog
+    id="event-dialog"
+    class="event-dialog"
+    aria-labelledby="preview-title"
+  >
+    <button
+      type="button"
+      class="dialog-close"
+      data-close
+      aria-label={t(lang, "Close event preview", "ปิดตัวอย่างผลงาน")}
+    >
+      ×
+    </button>
+    <div class="event-dialog-content"></div>
+  </dialog>
+  {events.map((event) => (
+    <EventPreview event={event} lang={lang} />
+  ))}
+</Layout>

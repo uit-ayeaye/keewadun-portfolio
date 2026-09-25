@@ -1,0 +1,13 @@
+---
+import EventPage from "../../components/EventPage.astro";
+import { events } from "../../data/portfolio";
+export function getStaticPaths() {
+  return events.map((event) => ({
+    params: { slug: event.id },
+    props: { event },
+  }));
+}
+const { event } = Astro.props;
+---
+
+<EventPage event={event} lang="en" />

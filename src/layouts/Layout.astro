@@ -1,0 +1,302 @@
+---
+import "@fontsource-variable/manrope";
+import "@fontsource-variable/playfair-display";
+import "@fontsource-variable/noto-sans-thai";
+import "../styles/global.css";
+import {
+  base,
+  origin,
+  home,
+  eventPath,
+  t,
+  type Lang,
+  type EventCredit,
+} from "../data/portfolio";
+import { photo } from "../data/images";
+interface Props {
+  lang: Lang;
+  title?: string;
+  description?: string;
+  event?: EventCredit;
+  noindex?: boolean;
+}
+const {
+  lang,
+  title = t(
+    Astro.props.lang,
+    "Dada — Thai–English MC & Content Creator | Kunwadee Phanompotivong",
+    "Dada — พิธีกรไทย–อังกฤษ | Kunwadee Phanompotivong",
+  ),
+  description = t(
+    Astro.props.lang,
+    "Meet Dada: Thai–English MC, content creator and voice actor. Explore 17 hosting credits, stage stories, and her cosmetic science background at Mae Fah Luang University.",
+    "รู้จัก Dada พิธีกรไทย–อังกฤษ คอนเทนต์ครีเอเตอร์ และนักพากย์เสียง ชม 17 ผลงานพิธีกรและเรื่องราวด้านวิทยาศาสตร์เครื่องสำอาง มหาวิทยาลัยแม่ฟ้าหลวง",
+  ),
+  event,
+  noindex = false,
+} = Astro.props;
+const en = event ? eventPath("en", event.id) : home("en");
+const th = event ? eventPath("th", event.id) : home("th");
+const canonical = origin + (event ? eventPath(lang, event.id) : home(lang));
+const image = origin + photo(event?.image || "dada-portrait.jpg").src;
+const person = {
+  "@type": "Person",
+  "@id": origin + home("en") + "#dada",
+  name: "Kunwadee Phanompotivong",
+  alternateName: "Dada",
+  url: origin + home("en"),
+  jobTitle: "Bilingual Master of Ceremonies",
+  image: origin + photo("dada-portrait.jpg").src,
+  knowsLanguage: ["Thai", "English"],
+  sameAs: ["https://www.instagram.com/keewadun/", "https://linktr.ee/keewadun"],
+};
+const schema = {
+  "@context": "https://schema.org",
+  "@graph": [
+    person,
+    {
+      "@type": event ? "WebPage" : "ProfilePage",
+      "@id": canonical,
+      name: title,
+      description,
+      url: canonical,
+      inLanguage: lang,
+      about: { "@id": person["@id"] },
+      ...(event ? {} : { mainEntity: { "@id": person["@id"] } }),
+    },
+    ...(event
+      ? [
+          {
+            "@type": "BreadcrumbList",
+            itemListElement: [
+              {
+                "@type": "ListItem",
+                position: 1,
+                name: "Dada",
+                item: origin + home(lang),
+              },
+              {
+                "@type": "ListItem",
+                position: 2,
+                name: event[lang],
+                item: canonical,
+              },
+            ],
+          },
+        ]
+      : []),
+  ],
+};
+---
+
+<!doctype html>
+<html lang={lang}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <meta name="theme-color" content="#712d43" />
+    <meta
+      name="robots"
+      content={
+        noindex ? "noindex,follow" : "index,follow,max-image-preview:large"
+      }
+    />
+    <link rel="canonical" href={canonical} />
+    <link rel="alternate" hreflang="en" href={origin + en} />
+    <link rel="alternate" hreflang="th" href={origin + th} />
+    <link rel="alternate" hreflang="x-default" href={origin + en} />
+    <link rel="sitemap" href={`${base}/sitemap.xml`} />
+    <link rel="icon" type="image/svg+xml" href={`${base}/favicon.svg`} />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={image} />
+    <meta
+      property="og:image:alt"
+      content={event?.[lang] || "Dada, Kunwadee Phanompotivong"}
+    />
+    <meta property="og:locale" content={lang === "th" ? "th_TH" : "en_US"} />
+    <meta
+      property="og:locale:alternate"
+      content={lang === "th" ? "en_US" : "th_TH"}
+    />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={image} />
+    <script
+      type="application/ld+json"
+      set:html={JSON.stringify(schema).replace(/</g, "\\u003c")}
+    />
+  </head>
+  <body>
+    <a href="#main" class="skip-link">
+      {t(lang, "Skip to content", "ข้ามไปยังเนื้อหา")}
+    </a>
+    <div class="reading-progress" aria-hidden="true"></div>
+    <header class="site-header">
+      <a
+        class="brand"
+        href={home(lang)}
+        aria-label={t(lang, "Dada home", "หน้าแรก Dada")}
+      >
+        dada<span aria-hidden="true">✳</span>
+      </a>
+      <nav
+        class="main-nav"
+        id="main-nav"
+        aria-label={t(lang, "Main navigation", "เมนูหลัก")}
+      >
+        <a href={`${home(lang)}#about`}>
+          {t(lang, "A little about me", "รู้จักกันอีกนิด")}
+        </a>
+        <a href={`${home(lang)}#work`}>
+          {t(lang, "On the mic", "ผลงานบนเวที")}
+        </a>
+        <a href={`${home(lang)}#events`}>
+          {t(lang, "All the moments", "ทุกช่วงเวลา")}
+        </a>
+      </nav>
+      <div class="header-actions">
+        <div class="language-switch" aria-label={t(lang, "Language", "ภาษา")}>
+          <a
+            href={en}
+            lang="en"
+            hreflang="en"
+            aria-current={lang === "en" ? "page" : undefined}
+          >
+            EN
+          </a>
+          <a
+            href={th}
+            lang="th"
+            hreflang="th"
+            aria-current={lang === "th" ? "page" : undefined}
+          >
+            TH
+          </a>
+        </div>
+        <a
+          class="button small header-hello"
+          href={`${home(lang)}#contact`}
+          data-contact
+        >
+          {t(lang, "Say hello", "ทักทายกัน")} <span>↗</span>
+        </a>
+        <button
+          class="menu-toggle"
+          type="button"
+          aria-label={t(lang, "Open menu", "เปิดเมนู")}
+          aria-controls="main-nav"
+          aria-expanded="false"
+        >
+          <span></span>
+          <span></span>
+        </button>
+      </div>
+    </header>
+    <main id="main">
+      <slot />
+    </main>
+    <footer class="site-footer wrap">
+      <a class="brand" href={home(lang)}>
+        dada<span aria-hidden="true">✳</span>
+      </a>
+      <p>
+        Kunwadee Phanompotivong
+        <br />
+        <span>
+          {t(
+            lang,
+            "A little heart. A lot of possibility.",
+            "ใส่ใจในทุกโอกาสและทุกการสื่อสาร",
+          )}
+        </span>
+      </p>
+      <div>
+        <a
+          href="https://www.instagram.com/keewadun/"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Instagram ↗
+        </a>
+        <a
+          href="https://linktr.ee/keewadun"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Linktree ↗
+        </a>
+      </div>
+      <a
+        href="#main"
+        class="back-top"
+        aria-label={t(lang, "Back to top", "กลับด้านบน")}
+      >
+        ↑
+      </a>
+    </footer>
+    <dialog
+      class="contact-dialog"
+      id="contact-dialog"
+      aria-labelledby="contact-title"
+    >
+      <button
+        type="button"
+        class="dialog-close"
+        data-close
+        aria-label={t(lang, "Close contact", "ปิดหน้าต่างติดต่อ")}
+      >
+        ×
+      </button>
+      <div class="contact-dialog-inner">
+        <span class="pill">
+          {t(
+            lang,
+            "GOOD CONVERSATIONS START HERE",
+            "เริ่มต้นบทสนทนาดี ๆ ที่นี่",
+          )}
+        </span>
+        <h2 id="contact-title">
+          {t(lang, "Oh, hello!", "สวัสดี!")} <em>☺</em>
+        </h2>
+        <p>
+          {t(
+            lang,
+            "A stage to host? A story to tell? Share your event, date, location, and the languages you have in mind.",
+            "มีเวทีให้ดำเนินรายการ หรือเรื่องราวที่อยากเล่า? ส่งรายละเอียดงาน วันที่ สถานที่ และภาษาที่ต้องการมาได้เลย",
+          )}
+        </p>
+        <a
+          class="contact-option"
+          href="https://line.me/ti/p/iLlNAWNNnR"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <span>
+            <small>LINE</small>
+            {t(lang, "Let’s start a conversation", "เริ่มต้นพูดคุยกัน")}
+          </span>
+          <span>↗</span>
+        </a>
+        <a class="contact-option" href="mailto:wwkunwadee05@gmail.com">
+          <span>
+            <small>EMAIL</small>wwkunwadee05@gmail.com
+          </span>
+          <span>↗</span>
+        </a>
+        <button type="button" class="copy-email text-button">
+          {t(lang, "Copy email address", "คัดลอกอีเมล")} <span>⧉</span>
+        </button>
+        <p class="copy-status" role="status" aria-live="polite"></p>
+      </div>
+    </dialog>
+    <script>
+      import "../scripts/interactions";
+    </script>
+  </body>
+</html>

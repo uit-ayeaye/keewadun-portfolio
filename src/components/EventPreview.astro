@@ -1,0 +1,35 @@
+---
+import Photo from "./Photo.astro";
+import {
+  categories,
+  description,
+  eventPath,
+  t,
+  type Lang,
+  type EventCredit,
+} from "../data/portfolio";
+const { event, lang } = Astro.props as { event: EventCredit; lang: Lang };
+---
+
+<template id={`preview-${event.id}`}>
+  <div class:list={["preview-layout", { "no-photo": !event.image }]}>
+    {event.image && (
+      <Photo
+        name={event.image}
+        alt={event[lang]}
+        sizes="(max-width: 700px) 90vw, 440px"
+      />
+    )}
+    <div class="preview-copy">
+      <p class="eyebrow">
+        {categories[event.category][lang]}{" "}
+        {event.year !== "—" && `· ${event.year}`}
+      </p>
+      <h2 id="preview-title">{event[lang]}</h2>
+      <p>{description(event, lang)}</p>
+      <a class="button" href={eventPath(lang, event.id)}>
+        {t(lang, "Explore this story", "ชมเรื่องราวนี้")} <span>↗</span>
+      </a>
+    </div>
+  </div>
+</template>

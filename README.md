@@ -1,27 +1,44 @@
 # DADA — Kunwadee Phanompotivong
 
-A responsive Thai–English portfolio for Dada’s public MC, creator and voice work, with a cosmetic science biography, six photo stories and all 17 hosting credits from her published portfolio.
+A bilingual Astro 7 + TypeScript portfolio, with Motion animations, 17 source-backed hosting stories in English and Thai, event preview dialogs, full photograph lightboxes, and a contact dialog.
 
-## Run locally
+**Live:** https://thomasdlynn.dev/keewadun-portfolio/
+
+## Development
+
+Requires Node 22.12+ and npm. Install the locked dependencies, then start Astro:
 
 ```sh
-python3 -m http.server 4173 --directory dist
+npm ci
+npm run dev
 ```
 
-Open http://localhost:4173. No install, build, backend, secret or tracking service is required.
+Open http://127.0.0.1:4321/keewadun-portfolio/.
 
-## Editing
+```sh
+npm run build   # Type-check, generate optimized pages/images, verify output
+npm run preview # Serve the production build on port 4321
+npm test        # Recheck the generated routes, metadata and internal links
+```
 
-- `dist/index.html`: page structure and bilingual copy (`data-en`, `data-th`).
-- `dist/app.js`: event credits, categories, descriptions, language and interaction behavior.
-- `dist/styles.css`: responsive typography, layout and motion preferences.
-- `dist/assets`: photographs extracted from the subject’s public portfolio; favicon.
+## Architecture
 
-Language preference is stored locally when browser storage is available. English is the default. The site links directly to the original documents and public work-contact channels. Contact links do not send messages automatically.
+- `src/data/portfolio.ts`: typed, bilingual source data for every event.
+- `src/components/Home.astro`: responsive homepage, gallery, searchable archive.
+- `src/components/EventPage.astro`: individual event pages with source links and related navigation.
+- `src/layouts/Layout.astro`: shared navigation, SEO metadata, JSON-LD, and contact dialog.
+- `src/scripts/interactions.ts`: progressive enhancement with Motion; event filters, search, dialogs, clipboard, progress indicator and mobile menu.
+- `src/styles/global.css`: design system, responsive layout, keyboard focus, print styles and reduced-motion support.
+- `src/assets`: original portfolio photographs; Astro builds responsive WebP variants.
+- `scripts/verify-build.mjs`: checks all generated HTML pages, sitemap count, JSON-LD and local href/src targets.
 
-## Publishing
+The main content and event links work without JavaScript. Real `/th/` URLs preserve the same event when changing language. No API keys, tracking, remote fonts, runtime framework hydration or backend are needed. The JavaScript bundle is approximately 21 KB gzipped. Images below the fold load lazily; the main portrait loads eagerly with explicit dimensions and responsive candidates. Motion uses transform/opacity and respects reduced motion. Copying email is user initiated; contact links never send a message automatically.
 
-GitHub Actions deploys `dist` to GitHub Pages on pushes to `main`. In repository settings, Pages must use GitHub Actions. All asset paths are relative so project-path hosting works.
+## SEO and deployment
+
+GitHub Actions builds and deploys on pushes to `main`. The site generates 36 indexable URLs (2 homepages and 34 event pages) plus a noindex 404 page. Every page includes a title, description, canonical URL, EN/TH/x-default alternates, Open Graph and Twitter metadata, and JSON-LD. The XML sitemap lists all 36 language URLs. No unsupported Event dates, reviews or ratings are emitted. The site's `robots.txt` is emitted under its GitHub Pages project path; the domain owner controls the authoritative root `/robots.txt`.
+
+If hosting changes, update `astro.config.mjs` and `base`/`origin` in `src/data/portfolio.ts` together. Source files are tracked; `dist/` is generated and ignored. HTTPS and the existing inherited GitHub Pages domain are preserved.
 
 ## Sources and editorial boundaries
 

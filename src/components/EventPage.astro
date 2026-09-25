@@ -1,0 +1,169 @@
+---
+import Layout from "../layouts/Layout.astro";
+import Photo from "./Photo.astro";
+import {
+  events,
+  categories,
+  description,
+  home,
+  eventPath,
+  portfolioURL,
+  t,
+  type EventCredit,
+  type Lang,
+} from "../data/portfolio";
+const { event: e, lang } = Astro.props as { event: EventCredit; lang: Lang };
+const index = events.findIndex((event) => event.id === e.id);
+const next = events[(index + 1) % events.length];
+const desc = description(e, lang);
+---
+
+<Layout
+  lang={lang}
+  event={e}
+  title={`${e[lang]} | Dada — ${t(lang, "Hosting Portfolio", "ผลงานพิธีกร")}`}
+  description={desc}
+>
+  <section class="event-intro wrap">
+    <a class="back-link" href={`${home(lang)}#events`}>
+      ← {t(lang, "Back to the stage diary", "กลับไปบันทึกจากเวที")}
+    </a>
+    <div class="event-intro-top">
+      <p class="eyebrow">{categories[e.category][lang]}</p>
+      <span class="pill">{String(index + 1).padStart(2, "0")} / 17</span>
+    </div>
+    <h1 class="event-heading hero-enter">{e[lang]}</h1>
+    <div class="event-facts">
+      <span>
+        <small>{t(lang, "ON THE MIC", "พิธีกร")}</small>Dada · Kunwadee
+      </span>
+      <span>
+        <small>{t(lang, "YEAR", "ปี")}</small>
+        {e.year === "—" ? t(lang, "Not listed", "ไม่ระบุ") : e.year}
+      </span>
+      <span>
+        <small>{t(lang, "FROM THE PORTFOLIO", "จากพอร์ตโฟลิโอ")}</small>
+        {t(lang, `Page ${e.page}`, `หน้า ${e.page}`)}
+      </span>
+    </div>
+  </section>
+  {e.image ? (
+    <div class="event-cover wrap" data-reveal>
+      <button
+        type="button"
+        data-lightbox
+        aria-label={t(lang, "View full photograph", "ดูภาพขนาดเต็ม")}
+      >
+        <Photo
+          name={e.image}
+          alt={e[lang]}
+          hero
+          sizes="(max-width: 700px) 92vw, 80vw"
+        />
+        <span class="image-pill">
+          {t(lang, "Take a closer look", "ดูใกล้ ๆ")} ⤢
+        </span>
+      </button>
+    </div>
+  ) : (
+    <div class="event-type-art wrap" aria-hidden="true">
+      <span>ON THE MIC.</span>
+      <em>Dada</em>
+      <span>✳</span>
+    </div>
+  )}
+  <section class="section wrap story-grid">
+    <div data-reveal>
+      <p class="eyebrow">
+        {t(lang, "A MOMENT IN THE STORY", "อีกช่วงเวลาหนึ่งในเรื่องราว")}
+      </p>
+      <h2>
+        {t(lang, "The stage.", "เวทีนี้")}
+        <br />
+        <em>{t(lang, "The connection.", "และความประทับใจ")}</em>
+      </h2>
+    </div>
+    <div class="story-copy" data-reveal>
+      <p class="lead">{desc}</p>
+      <p>
+        {t(
+          lang,
+          "This credit is part of Dada’s published MC portfolio. Browse the original document for the full context and more of her work.",
+          "ผลงานนี้เป็นส่วนหนึ่งของพอร์ตโฟลิโอพิธีกรที่ Dada เผยแพร่ สามารถชมรายละเอียดต้นฉบับและผลงานอื่น ๆ ได้ในเอกสารฉบับเต็ม",
+        )}
+      </p>
+      <a
+        class="text-link"
+        href={`${portfolioURL}#page=${e.page}`}
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        {t(lang, "Open the original portfolio", "เปิดพอร์ตโฟลิโอต้นฉบับ")} ↗
+      </a>
+      <div class="host-card">
+        <Photo name="dada-portrait.jpg" alt="Dada" sizes="64px" />
+        <div>
+          <strong>Kunwadee Phanompotivong</strong>
+          <span>
+            {t(
+              lang,
+              "Thai–English MC · Creator · Voice actor",
+              "พิธีกรไทย–อังกฤษ · ครีเอเตอร์ · นักพากย์เสียง",
+            )}
+          </span>
+        </div>
+      </div>
+    </div>
+  </section>
+  {e.id === "pride" && (
+    <section class="wrap extra-photo" data-reveal>
+      <Photo
+        name="pride-2025.jpg"
+        alt={t(lang, "MFU Pride in You 2025", "MFU Pride in You 2025")}
+        sizes="(max-width: 700px) 90vw, 75vw"
+      />
+      <p>MFU PRIDE IN YOU · 2025</p>
+    </section>
+  )}
+  <section class="next-story wrap" data-reveal>
+    <div>
+      <p class="eyebrow">
+        {t(lang, "THERE’S ALWAYS ANOTHER STORY", "ยังมีเรื่องราวให้ค้นพบ")}
+      </p>
+      <h2>
+        <a href={eventPath(lang, next.id)}>
+          {next[lang]} <span>↗</span>
+        </a>
+      </h2>
+    </div>
+    <span class="pill">{t(lang, "UP NEXT", "ผลงานถัดไป")}</span>
+  </section>
+  <section class="event-contact">
+    <div class="wrap">
+      <h2>
+        {t(lang, "Your moment,", "ช่วงเวลาของคุณ")}{" "}
+        <em>{t(lang, "next?", "ต่อไปไหม?")}</em>
+      </h2>
+      <a class="button lime" href="mailto:wwkunwadee05@gmail.com" data-contact>
+        {t(lang, "Let’s talk", "มาคุยกัน")} <span>↗</span>
+      </a>
+    </div>
+  </section>
+  {e.image && (
+    <dialog
+      class="photo-dialog"
+      id="photo-dialog"
+      aria-label={t(lang, "Full event photograph", "ภาพผลงานขนาดเต็ม")}
+    >
+      <button
+        type="button"
+        class="dialog-close"
+        data-close
+        aria-label={t(lang, "Close photograph", "ปิดภาพ")}
+      >
+        ×
+      </button>
+      <Photo name={e.image} alt={e[lang]} sizes="90vw" />
+    </dialog>
+  )}
+</Layout>

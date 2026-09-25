@@ -1,0 +1,19 @@
+---
+import Layout from "../layouts/Layout.astro";
+import { home } from "../data/portfolio";
+---
+
+<Layout lang="en" title="A little detour | Dada" noindex>
+  <section class="section wrap not-found">
+    <p class="eyebrow">404 / A LITTLE DETOUR</p>
+    <h1>
+      This moment
+      <br />
+      <em>isn’t here.</em>
+    </h1>
+    <p>Let’s get you back to the good stuff.</p>
+    <a class="button" href={home("en")}>
+      Back to Dada ↗
+    </a>
+  </section>
+</Layout>
