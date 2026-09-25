@@ -173,3 +173,6 @@ export const videoURL = (v: VideoClip) => `${base}/media/${v.id}.mp4`;
 export const posterURL = (v: VideoClip) => `${base}/media/${v.id}.jpg`;
 export const duration = (v: VideoClip) =>
   `${Math.floor(v.seconds / 60)}:${String(Math.floor(v.seconds % 60)).padStart(2, "0")}`;
+
+export const highQualityURL = (v: VideoClip) => `${base}/media/${v.id}-hq.mp4`;
+export const previewURL = (v: VideoClip) => `${base}/media/${v.id}-preview.mp4`;

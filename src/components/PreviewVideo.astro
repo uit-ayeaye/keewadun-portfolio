@@ -1,0 +1,16 @@
+---
+import { previewURL, type VideoClip } from "../data/videos";
+const { clip } = Astro.props as { clip: VideoClip };
+---
+
+<video
+  class="ambient-video"
+  data-preview-src={previewURL(clip)}
+  muted
+  loop
+  playsinline
+  preload="none"
+  disablepictureinpicture
+  tabindex="-1"
+  aria-hidden="true"
+></video>

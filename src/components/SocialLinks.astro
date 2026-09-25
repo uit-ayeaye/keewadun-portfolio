@@ -1,4 +1,5 @@
 ---
+import Icon from "./Icon.astro";
 import { socials, t, type Lang } from "../data/portfolio";
 const { lang } = Astro.props as { lang: Lang };
 ---
@@ -9,7 +10,13 @@ const { lang } = Astro.props as { lang: Lang };
 >
   {socials.map((s) => (
     <a href={s.url} target="_blank" rel="noopener noreferrer">
-      <span>{s.label}</span>
+      <span class="social-logo">
+        <Icon name={s.label} />
+      </span>
+      <span class="social-label">
+        <strong>{s.label}</strong>
+        <small>{s.handle}</small>
+      </span>
       <span aria-hidden="true">↗</span>
     </a>
   ))}

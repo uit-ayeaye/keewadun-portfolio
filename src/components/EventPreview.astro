@@ -14,7 +14,7 @@ const { event, lang } = Astro.props as { event: EventCredit; lang: Lang };
 
 <template id={`preview-${event.id}`}>
   <div class="preview-layout">
-    <EventVisual event={event} lang={lang} />
+    <EventVisual event={event} lang={lang} preview={false} />
     <div class="preview-copy">
       <p class="eyebrow">
         {categories[event.category][lang]}{" "}
@@ -22,7 +22,20 @@ const { event, lang } = Astro.props as { event: EventCredit; lang: Lang };
       </p>
       <h2 id="preview-title">{event[lang]}</h2>
       <p>{description(event, lang)}</p>
-      {videosFor(event.id).length > 0 && <a class="preview-video-link text-link" href={`${eventPath(lang, event.id)}#videos`}>▶ {t(lang, `Watch ${videosFor(event.id).length} video sample${videosFor(event.id).length > 1 ? "s" : ""}`, `ชม ${videosFor(event.id).length} วิดีโอ`)} ↗</a>}
+      {videosFor(event.id).length > 0 && (
+        <a
+          class="preview-video-link text-link"
+          href={`${eventPath(lang, event.id)}#videos`}
+        >
+          ▶{" "}
+          {t(
+            lang,
+            `Watch ${videosFor(event.id).length} video sample${videosFor(event.id).length > 1 ? "s" : ""}`,
+            `ชม ${videosFor(event.id).length} วิดีโอ`,
+          )}{" "}
+          ↗
+        </a>
+      )}
       <a class="button" href={eventPath(lang, event.id)}>
         {t(lang, "Explore this story", "ชมเรื่องราวนี้")} <span>↗</span>
       </a>

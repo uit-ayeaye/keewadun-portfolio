@@ -1,4 +1,6 @@
 ---
+import Icon from "./Icon.astro";
+import PreviewVideo from "./PreviewVideo.astro";
 import VideoGrid from "./VideoGrid.astro";
 import { videos, videosFor } from "../data/videos";
 import Layout from "../layouts/Layout.astro";
@@ -233,6 +235,9 @@ const { lang } = Astro.props as { lang: Lang };
                   alt={e[lang]}
                   sizes="(max-width: 560px) 90vw, (max-width: 1000px) 44vw, 29vw"
                 />
+                {videosFor(e.id)[0] && (
+                  <PreviewVideo clip={videosFor(e.id)[0]} />
+                )}
                 <span class="image-pill">
                   {String(index + 1).padStart(2, "0")} /{" "}
                   {t(lang, "ON THE MIC", "บนเวที")}
@@ -271,17 +276,77 @@ const { lang } = Astro.props as { lang: Lang };
   <section id="videos" class="section video-section">
     <div class="wrap">
       <div class="section-heading" data-reveal>
-        <div><p class="eyebrow">03 / {t(lang, "DADA, IN MOTION", "DADA บนเวที")}</p>
-        <h2>{t(lang, "A voice. A spark.", "น้ำเสียงและประกาย")}
-          <br /><em>{t(lang, "A real connection.", "เชื่อมทุกความรู้สึก")}</em></h2></div>
-        <div class="section-aside"><span class="reel-stamp" aria-hidden="true">▶ <span>PRESS<br />PLAY</span> ✳</span>
-          <p>{t(lang, "12 little windows into life on the mic. Pick a moment and press play.", "12 ช่วงเวลาจากชีวิตพิธีกร เลือกผลงานที่ชอบแล้วกดเล่นได้เลย")}</p></div>
+        <div>
+          <p class="eyebrow">
+            03 / {t(lang, "DADA, IN MOTION", "DADA บนเวที")}
+          </p>
+          <h2>
+            {t(lang, "A voice. A spark.", "น้ำเสียงและประกาย")}
+            <br />
+            <em>{t(lang, "A real connection.", "เชื่อมทุกความรู้สึก")}</em>
+          </h2>
+        </div>
+        <div class="section-aside">
+          <span class="reel-stamp" aria-hidden="true">
+            ▶{" "}
+            <span>
+              PRESS
+              <br />
+              PLAY
+            </span>{" "}
+            ✳
+          </span>
+          <p>
+            {t(
+              lang,
+              "12 little windows into life on the mic. Pick a moment and press play.",
+              "12 ช่วงเวลาจากชีวิตพิธีกร เลือกผลงานที่ชอบแล้วกดเล่นได้เลย",
+            )}
+          </p>
+        </div>
       </div>
-      <div class="filters video-filters" role="group" aria-label={t(lang, "Filter videos", "กรองวิดีโอ")}>
-        <button type="button" data-video-filter="all" aria-pressed="true">{t(lang, "All films", "วิดีโอทั้งหมด")} <span>12</span></button>
-        {Object.entries(categories).map(([key, names]) => <button type="button" data-video-filter={key} aria-pressed="false">{names[lang]}</button>)}
+      <div
+        class="filters video-filters"
+        role="group"
+        aria-label={t(lang, "Filter videos", "กรองวิดีโอ")}
+      >
+        <button type="button" data-video-filter="all" aria-pressed="true">
+          {t(lang, "All films", "วิดีโอทั้งหมด")} <span>12</span>
+        </button>
+        {Object.entries(categories).map(([key, names]) => (
+          <button type="button" data-video-filter={key} aria-pressed="false">
+            {names[lang]}
+          </button>
+        ))}
       </div>
-      <p class="video-count" role="status" aria-live="polite">{t(lang, "12 films to explore · original event audio", "12 วิดีโอให้ชม · เสียงจริงจากงาน")}</p>
+      <div class="reel-tools">
+        <button type="button" class="button small ghost" data-surprise>
+          <Icon name="shuffle" />
+          {t(lang, "Surprise me", "สุ่มช่วงเวลาดี ๆ")}
+        </button>
+        <button
+          type="button"
+          class="preview-toggle"
+          data-preview-toggle
+          aria-pressed="false"
+        >
+          {t(lang, "Pause previews", "หยุดตัวอย่าง")}
+        </button>
+        <span>
+          {t(
+            lang,
+            "Silent previews. Sound when you tap.",
+            "ตัวอย่างไม่มีเสียง แตะเพื่อชมพร้อมเสียง",
+          )}
+        </span>
+      </div>
+      <p class="video-count" role="status" aria-live="polite">
+        {t(
+          lang,
+          "12 films to explore · original event audio",
+          "12 วิดีโอให้ชม · เสียงจริงจากงาน",
+        )}
+      </p>
       <VideoGrid clips={videos} lang={lang} />
     </div>
   </section>
@@ -341,7 +406,20 @@ const { lang } = Astro.props as { lang: Lang };
           <span class="event-number">{String(index + 1).padStart(2, "0")}</span>
           <span class="event-title">
             {e[lang]}
-            <small>{categories[e.category][lang]}{videosFor(e.id).length > 0 && <span class="has-video"> · ▶ {videosFor(e.id).length} {t(lang, "clips", "วิดีโอ")}</span>}</small>
+            <small>
+              {categories[e.category][lang]}
+              {videosFor(e.id).length > 0 && (
+                <span class="has-video">
+                  {" "}
+                  · ▶ {videosFor(e.id).length}{" "}
+                  {t(
+                    lang,
+                    videosFor(e.id).length === 1 ? "clip" : "clips",
+                    "วิดีโอ",
+                  )}
+                </span>
+              )}
+            </small>
           </span>
           <span class="event-year">{e.year}</span>
           <span class="event-arrow" aria-hidden="true">
@@ -486,15 +564,21 @@ const { lang } = Astro.props as { lang: Lang };
       </div>
       <SocialLinks lang={lang} />
       <div class="direct-contact">
-        <a href="tel:+66969769369">096-976-9369 ↗</a>
+        <a href="tel:+66969769369">
+          <Icon name="phone" />
+          096-976-9369 ↗
+        </a>
         <a
           href="https://line.me/ti/p/iLlNAWNNnR"
           target="_blank"
           rel="noopener noreferrer"
         >
-          LINE ↗
+          <Icon name="LINE" /> LINE ↗
         </a>
-        <a href="mailto:wwkunwadee05@gmail.com">wwkunwadee05@gmail.com ↗</a>
+        <a href="mailto:wwkunwadee05@gmail.com">
+          <Icon name="mail" />
+          wwkunwadee05@gmail.com ↗
+        </a>
         <a
           href="https://drive.google.com/file/d/1Ul89mVOEIkb7XQD8qq0aTuRZPu94k14Z/view"
           target="_blank"

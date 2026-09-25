@@ -1,11 +1,13 @@
+import { initPreviews } from "./previews";
 import { animate, inView, stagger } from "motion";
 const lang = document.documentElement.lang;
 const t = (en: string, th: string) => (lang === "th" ? th : en);
 const reduced = window.matchMedia("(prefers-reduced-motion: reduce)");
+const previews = initPreviews();
 const menu = document.querySelector<HTMLDialogElement>("#menu-dialog");
 const menuButton = document.querySelector<HTMLButtonElement>(".menu-toggle");
 function closeMenu() {
-  if (menu?.open) menu.close();
+  if (menu?.open) closeDialog(menu);
 }
 menuButton?.addEventListener("click", () => {
   if (menu?.open) return closeMenu();
@@ -68,25 +70,79 @@ function syncLanguageLinks() {
 }
 syncLanguageLinks();
 window.addEventListener("hashchange", syncLanguageLinks);
+const closing = new WeakSet<HTMLDialogElement>();
+function closeDialog(dialog: HTMLDialogElement) {
+  if (!dialog.open || closing.has(dialog)) return;
+  if (reduced.matches) {
+    dialog.close();
+    return;
+  }
+  closing.add(dialog);
+  dialog.classList.add("is-closing");
+  dialog.querySelectorAll("video").forEach((v) => v.pause());
+  dialog.getAnimations().forEach((a) => a.cancel());
+  const exit = dialog.animate(
+    [
+      { opacity: 1, transform: "translateY(0) scale(1)" },
+      { opacity: 0, transform: "translateY(14px) scale(.97)" },
+    ],
+    { duration: 180, easing: "ease-in", fill: "forwards" },
+  );
+  exit.finished
+    .catch(() => {})
+    .then(() => {
+      dialog.close();
+      exit.cancel();
+      closing.delete(dialog);
+      dialog.classList.remove("is-closing");
+    });
+}
 function openDialog(dialog: HTMLDialogElement | null) {
-  if (!dialog) return;
-  closeMenu();
+  if (!dialog || dialog.open) return;
+  if (menu?.open && menu !== dialog) menu.close();
+  previews.suspend();
   dialog.showModal();
   document.body.classList.add("modal-open");
-  if (!reduced.matches)
-    animate(
-      dialog,
-      { opacity: [0, 1], scale: [0.94, 1] },
-      { type: "spring", bounce: 0.22, duration: 0.42 },
+  if (!reduced.matches) {
+    dialog.animate(
+      [
+        { opacity: 0, transform: "translateY(32px) scale(.94) rotate(-.7deg)" },
+        { opacity: 1, transform: "translateY(0) scale(1) rotate(0deg)" },
+      ],
+      { duration: 480, easing: "cubic-bezier(.16,.85,.25,1.18)" },
     );
+    const items = dialog.querySelectorAll(
+      ".drawer-nav a, .menu-ticket, .menu-portrait, .contact-option, .service-picker",
+    );
+    items.forEach((item, index) =>
+      item.animate(
+        [
+          { opacity: 0, transform: "translateY(14px)" },
+          { opacity: 1, transform: "translateY(0)" },
+        ],
+        {
+          duration: 420,
+          delay: Math.min(index, 5) * 45 + 75,
+          easing: "cubic-bezier(.2,.8,.2,1.25)",
+          fill: "backwards",
+        },
+      ),
+    );
+  }
 }
 document.querySelectorAll<HTMLDialogElement>("dialog").forEach((dialog) => {
   dialog
     .querySelector("[data-close]")
-    ?.addEventListener("click", () => dialog.close());
+    ?.addEventListener("click", () => closeDialog(dialog));
+  dialog.addEventListener("cancel", (event) => {
+    event.preventDefault();
+    closeDialog(dialog);
+  });
   dialog.addEventListener("close", () => {
-    if (!document.querySelector("dialog[open]"))
+    if (!document.querySelector("dialog[open]")) {
       document.body.classList.remove("modal-open");
+      previews.resume();
+    }
   });
   dialog.addEventListener("click", (e) => {
     if (e.target !== dialog) return;
@@ -97,7 +153,7 @@ document.querySelectorAll<HTMLDialogElement>("dialog").forEach((dialog) => {
       e.clientY < box.top ||
       e.clientY > box.bottom
     )
-      dialog.close();
+      closeDialog(dialog);
   });
 });
 document.querySelectorAll<HTMLAnchorElement>("[data-contact]").forEach((link) =>
@@ -212,8 +268,18 @@ if (!reduced.matches) {
       if (!reduced.matches)
         animate(
           element,
-          { opacity: [0, 1], y: [24, 0] },
-          { type: "spring", bounce: 0.15, duration: 0.65 },
+          { opacity: [0, 1], y: [32, 0], scale: [0.97, 1] },
+          {
+            type: "spring",
+            bounce: 0.28,
+            duration: 0.75,
+            delay:
+              (Array.from(element.parentElement?.children || []).indexOf(
+                element,
+              ) %
+                4) *
+              0.045,
+          },
         );
     },
     { margin: "0px 0px -35px 0px" },
@@ -240,7 +306,7 @@ window.addEventListener(
 window.addEventListener("resize", updateProgress);
 updateProgress();
 
-// Video sources live in inert templates: no movie bytes until a visitor chooses one.
+// Full-length films only load on demand; separate tiny previews are managed above.
 const videoDialog = document.querySelector<HTMLDialogElement>("#video-dialog");
 document.addEventListener("click", (event) => {
   if (!(event.target instanceof Element)) return;
@@ -265,6 +331,55 @@ document.addEventListener("click", (event) => {
   const shell = content.querySelector(".video-player-shell");
   const status = content.querySelector(".video-status");
   if (!player) return;
+  const connection = (
+    navigator as Navigator & { connection?: { saveData?: boolean } }
+  ).connection;
+  if (connection?.saveData) {
+    const standard = content.querySelector<HTMLButtonElement>(
+      '[data-quality="standard"]',
+    );
+    if (standard) {
+      player.querySelector("source")!.src = standard.dataset.qualitySrc!;
+      content
+        .querySelectorAll<HTMLButtonElement>("[data-quality]")
+        .forEach((b) => b.setAttribute("aria-pressed", String(b === standard)));
+    }
+  }
+  content
+    .querySelectorAll<HTMLButtonElement>("[data-quality-src]")
+    .forEach((button) =>
+      button.addEventListener("click", () => {
+        if (button.getAttribute("aria-pressed") === "true") return;
+        const time = player.currentTime;
+        const wasPaused = player.paused;
+        const volume = player.volume;
+        const muted = player.muted;
+        content
+          .querySelectorAll<HTMLButtonElement>("[data-quality]")
+          .forEach((b) => b.setAttribute("aria-pressed", String(b === button)));
+        player.pause();
+        player.src = button.dataset.qualitySrc!;
+        player.addEventListener(
+          "loadedmetadata",
+          () => {
+            player.currentTime = Math.min(time, player.duration);
+            player.volume = volume;
+            player.muted = muted;
+            if (!wasPaused) player.play().catch(() => {});
+          },
+          { once: true },
+        );
+        player.load();
+      }),
+    );
+  player.addEventListener("error", () => {
+    shell?.classList.remove("is-buffering");
+    if (status)
+      status.textContent = t(
+        "Try Less data or open the separate player below.",
+        "ลองโหมดประหยัดเน็ต หรือเปิดเครื่องเล่นแยกด้านล่าง",
+      );
+  });
   const ready = () => shell?.classList.remove("is-buffering");
   player.addEventListener("waiting", () =>
     shell?.classList.add("is-buffering"),
@@ -327,6 +442,7 @@ videoFilters.forEach((button) =>
         `${count} films to explore · original event audio`,
         `${count} วิดีโอให้ชม · เสียงจริงจากงาน`,
       );
+    previews.refresh();
   }),
 );
 // A finite welcome flourish, never a blocking loading screen.
@@ -342,3 +458,73 @@ if (charm) {
     window.setTimeout(() => charm.remove(), 1800);
   } else charm.remove();
 }
+
+// Helpful little moments: a random film, booking prompts and tactile feedback.
+document
+  .querySelector<HTMLButtonElement>("[data-surprise]")
+  ?.addEventListener("click", () => {
+    const choices = [
+      ...document.querySelectorAll<HTMLAnchorElement>(
+        ".video-card:not([hidden]) .video-poster",
+      ),
+    ];
+    const choice = choices[Math.floor(Math.random() * choices.length)];
+    choice?.focus({ preventScroll: true });
+    choice?.click();
+  });
+document
+  .querySelectorAll<HTMLButtonElement>("[data-service]")
+  .forEach((button) =>
+    button.addEventListener("click", () => {
+      document
+        .querySelectorAll<HTMLButtonElement>("[data-service]")
+        .forEach((b) => b.setAttribute("aria-pressed", String(b === button)));
+      const email = document.querySelector<HTMLAnchorElement>(
+        "[data-booking-email]",
+      );
+      const subject = `${button.dataset.service} enquiry for Dada`;
+      const body = t(
+        "Hello Dada,\n\nI’d love to discuss a project.\nEvent / project:\nDate:\nLocation:\nLanguage(s):\n\nThank you!",
+        "สวัสดี Dada\n\nสนใจสอบถามการร่วมงาน\nงาน / โปรเจกต์:\nวันที่:\nสถานที่:\nภาษาที่ต้องการ:\n\nขอบคุณค่ะ/ครับ",
+      );
+      if (email)
+        email.href = `mailto:wwkunwadee05@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    }),
+  );
+document.addEventListener("click", (event) => {
+  if (reduced.matches || !(event.target instanceof Element)) return;
+  const control = event.target.closest<HTMLElement>(
+    "button, .button, .social-links a, .back-top, .event-row, .video-poster, .work-image-link, .drawer-nav a",
+  );
+  if (
+    !control ||
+    control.classList.contains("dialog-close") ||
+    control.classList.contains("theme-toggle")
+  )
+    return;
+  control.animate(
+    [{ scale: "1" }, { scale: ".94" }, { scale: "1.035" }, { scale: "1" }],
+    { duration: 360, easing: "ease-out" },
+  );
+});
+const chapters = document.querySelectorAll<HTMLElement>(
+  "main > section[id], main > .hero, .offstage",
+);
+const chapterObserver = new IntersectionObserver(
+  (entries) => {
+    entries.forEach((entry) => {
+      entry.target.classList.toggle("is-in-view", entry.isIntersecting);
+      if (entry.isIntersecting) {
+        document
+          .querySelectorAll<HTMLAnchorElement>(".main-nav a, .drawer-nav a")
+          .forEach((a) => {
+            if (a.hash === `#${entry.target.id}`)
+              a.setAttribute("aria-current", "location");
+            else a.removeAttribute("aria-current");
+          });
+      }
+    });
+  },
+  { rootMargin: "-15% 0px -45% 0px", threshold: 0 },
+);
+chapters.forEach((chapter) => chapterObserver.observe(chapter));

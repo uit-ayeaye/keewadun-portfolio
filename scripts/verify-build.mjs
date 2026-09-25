@@ -56,7 +56,9 @@ for (const file of pages) {
   assert.match(html, /property="og:image:height" content="630"/);
   assert.match(html, /name="twitter:image:alt"/);
   if (file === "dist/index.html" || file === "dist/th/index.html") {
-    const mediaFiles = files.filter((f) => f.endsWith(".mp4"));
+    const mediaFiles = files.filter(
+      (f) => f.endsWith(".mp4") && !/-(hq|preview)\.mp4$/.test(f),
+    );
     assert.equal(mediaFiles.length, 12, "Every supplied clip has a web copy");
     assert.equal(
       (html.match(/<template id="video-/g) || []).length,
@@ -66,13 +68,16 @@ for (const file of pages) {
       (html.match(/class="video-card"/g) || []).length,
       mediaFiles.length,
     );
-    assert.equal(
-      (html.match(/preload="none"/g) || []).length,
-      mediaFiles.length,
+    assert.equal(files.filter((f) => f.endsWith("-hq.mp4")).length, 12);
+    assert.equal(files.filter((f) => f.endsWith("-preview.mp4")).length, 12);
+    assert.ok(
+      (html.match(/preload="none"/g) || []).length >= mediaFiles.length,
     );
+    assert.match(html, /data-preview-toggle/);
+    assert.match(html, /data-quality-src/);
     assert.ok(
       !/<video[^>]*autoplay/.test(html),
-      "No automatic video downloads",
+      "Preview autoplay is scheduled only after visibility and preference checks",
     );
   }
   assert.match(html, /class="theme-toggle"/);

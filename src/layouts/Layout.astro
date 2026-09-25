@@ -3,6 +3,7 @@ import "@fontsource-variable/manrope";
 import "@fontsource-variable/playfair-display";
 import "@fontsource-variable/noto-sans-thai";
 import "../styles/global.css";
+import Icon from "../components/Icon.astro";
 import VideoDialog from "../components/VideoDialog.astro";
 import { videos, videosFor } from "../data/videos";
 import Photo from "../components/Photo.astro";
@@ -44,7 +45,9 @@ const en = event ? eventPath("en", event.id) : home("en");
 const th = event ? eventPath("th", event.id) : home("th");
 const canonical = origin + (event ? eventPath(lang, event.id) : home(lang));
 const image = `${origin}${base}/social/${event?.id || "dada-kunwadee"}.jpg`;
-const imageAlt = event ? `${event[lang]} — Dada, Kunwadee Phanompotivong` : "Dada — Kunwadee Phanompotivong · Thai–English MC, creator & voice actor";
+const imageAlt = event
+  ? `${event[lang]} — Dada, Kunwadee Phanompotivong`
+  : "Dada — Kunwadee Phanompotivong · Thai–English MC, creator & voice actor";
 const person = {
   "@type": "Person",
   "@id": origin + home("en") + "#dada",
@@ -143,12 +146,7 @@ const schema = {
     <meta property="og:image:type" content="image/jpeg" />
     <meta property="og:site_name" content="Dada — Kunwadee" />
     <meta name="twitter:image:alt" content={imageAlt} />
-    <meta
-      property="og:image:alt"
-      content={
-        imageAlt
-      }
-    />
+    <meta property="og:image:alt" content={imageAlt} />
     <meta property="og:locale" content={lang === "th" ? "th_TH" : "en_US"} />
     <meta
       property="og:locale:alternate"
@@ -164,7 +162,27 @@ const schema = {
     />
   </head>
   <body>
-    <div class="arrival-charm" aria-hidden="true"><svg viewBox="0 0 32 40" fill="none"><rect x="10" y="2" width="12" height="23" rx="6" stroke="currentColor" stroke-width="2"/><path d="M5 17v3a11 11 0 0 0 22 0v-3M16 31v7M10 38h12M13 8h6M13 13h6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><span>dada ✳</span><i></i></div>
+    <div class="arrival-charm" aria-hidden="true">
+      <svg viewBox="0 0 32 40" fill="none">
+        <rect
+          x="10"
+          y="2"
+          width="12"
+          height="23"
+          rx="6"
+          stroke="currentColor"
+          stroke-width="2"
+        />
+        <path
+          d="M5 17v3a11 11 0 0 0 22 0v-3M16 31v7M10 38h12M13 8h6M13 13h6"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+        />
+      </svg>
+      <span>dada ✳</span>
+      <i></i>
+    </div>
     <a href="#main" class="skip-link">
       {t(lang, "Skip to content", "ข้ามไปยังเนื้อหา")}
     </a>
@@ -255,44 +273,72 @@ const schema = {
       <slot />
     </main>
     <footer class="site-footer wrap">
-      <a class="brand" href={home(lang)}>
-        dada<span aria-hidden="true">✳</span>
-      </a>
-      <p>
-        Kunwadee Phanompotivong
-        <br />
-        <span>
-          {t(
-            lang,
-            "A little heart. A lot of possibility.",
-            "ใส่ใจในทุกโอกาสและทุกการสื่อสาร",
-          )}
-        </span>
-      </p>
-      <div class="footer-links">
-        <SocialLinks lang={lang} />
-        <a
-          href="https://linktr.ee/keewadun"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          {t(
-            lang,
-            "All links & video samples",
-            "ลิงก์ทั้งหมดและตัวอย่างวิดีโอ",
-          )}{" "}
-          ↗
+      <div class="footer-intro">
+        <a class="brand" href={home(lang)}>
+          dada<span aria-hidden="true">✳</span>
         </a>
-        <a href="mailto:wwkunwadee05@gmail.com">wwkunwadee05@gmail.com ↗</a>
-        <a href="tel:+66969769369">096-976-9369 ↗</a>
+        <p>
+          Kunwadee Phanompotivong
+          <br />
+          <span>
+            {t(
+              lang,
+              "A little heart. A lot of possibility.",
+              "ใส่ใจในทุกโอกาสและทุกการสื่อสาร",
+            )}
+          </span>
+        </p>
+        <span class="footer-signature">
+          {t(
+            lang,
+            "See you at the next hello.",
+            "แล้วพบกันในคำทักทายครั้งต่อไป",
+          )}{" "}
+          ♡
+        </span>
       </div>
-      <a
-        href="#main"
-        class="back-top"
-        aria-label={t(lang, "Back to top", "กลับด้านบน")}
-      >
-        ↑
-      </a>
+      <div class="footer-connect">
+        <p class="eyebrow">
+          {t(lang, "STAY A LITTLE CLOSER", "มารู้จักกันอีกนิด")}
+        </p>
+        <SocialLinks lang={lang} />
+        <div class="footer-essentials">
+          <a href="mailto:wwkunwadee05@gmail.com">
+            <Icon name="mail" />
+            <span>wwkunwadee05@gmail.com</span>
+          </a>
+          <a href="tel:+66969769369">
+            <Icon name="phone" />
+            <span>096-976-9369</span>
+          </a>
+          <a
+            href="https://linktr.ee/keewadun"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <Icon name="link" />
+            <span>{t(lang, "All Dada’s links", "ลิงก์ทั้งหมดของ Dada")} ↗</span>
+          </a>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span>TH ↔ EN · BKK / CNX / CEI</span>
+        <button
+          type="button"
+          class="preview-toggle"
+          data-preview-toggle
+          aria-pressed="false"
+        >
+          {t(lang, "Pause previews", "หยุดตัวอย่าง")}
+        </button>
+        <a
+          href="#main"
+          class="back-top"
+          aria-label={t(lang, "Back to top", "กลับด้านบน")}
+        >
+          ↑
+        </a>
+      </div>
     </footer>
     <dialog id="menu-dialog" class="menu-dialog" aria-labelledby="menu-title">
       <button
@@ -316,6 +362,10 @@ const schema = {
             )}
           </span>
         </div>
+        <span class="menu-ticket">
+          <Icon name="mic" />{" "}
+          {t(lang, "YOUR BACKSTAGE PASS", "บัตรผ่านสู่หลังเวที")} <span>♡</span>
+        </span>
         <h2 id="menu-title">
           {t(lang, "Where shall", "อยากรู้จัก")}{" "}
           <em>{t(lang, "we go?", "มุมไหน?")}</em>
@@ -326,23 +376,37 @@ const schema = {
             aria-label={t(lang, "Explore Dada", "สำรวจเรื่องราวของ Dada")}
           >
             <a href={`${home(lang)}#about`}>
-              <small>01</small>
+              <small>
+                <Icon name="sparkle" />
+              </small>
               <span>{t(lang, "A little about me", "รู้จักกันอีกนิด")}</span>
               <i>↗</i>
             </a>
             <a href={`${home(lang)}#work`}>
-              <small>02</small>
+              <small>
+                <Icon name="mic" />
+              </small>
               <span>{t(lang, "On the mic", "ผลงานบนเวที")}</span>
               <i>↗</i>
             </a>
-            <a href={`${home(lang)}#videos`}><small>03</small><span>{t(lang, "In motion", "วิดีโอ")}</span><i>↗</i></a>
-        <a href={`${home(lang)}#events`}>
-              <small>04</small>
+            <a href={`${home(lang)}#videos`}>
+              <small>
+                <Icon name="film" />
+              </small>
+              <span>{t(lang, "In motion", "วิดีโอ")}</span>
+              <i>↗</i>
+            </a>
+            <a href={`${home(lang)}#events`}>
+              <small>
+                <Icon name="document" />
+              </small>
               <span>{t(lang, "All 17 moments", "ทั้ง 17 ช่วงเวลา")}</span>
               <i>↗</i>
             </a>
             <a href={`${home(lang)}#contact`}>
-              <small>05</small>
+              <small>
+                <Icon name="mail" />
+              </small>
               <span>{t(lang, "Let’s connect", "มาทำความรู้จักกัน")}</span>
               <i>↗</i>
             </a>
@@ -378,6 +442,10 @@ const schema = {
         ×
       </button>
       <div class="contact-dialog-inner">
+        <span class="hello-emblem" aria-hidden="true">
+          <Icon name="mail" />
+          <i>♡</i>
+        </span>
         <span class="pill">
           {t(
             lang,
@@ -395,6 +463,24 @@ const schema = {
             "มีเวทีให้ดำเนินรายการ หรือเรื่องราวที่อยากเล่า? ส่งรายละเอียดงาน วันที่ สถานที่ และภาษาที่ต้องการมาได้เลย",
           )}
         </p>
+        <div
+          class="service-picker"
+          role="group"
+          aria-label={t(lang, "What shall we create?", "อยากร่วมงานด้านไหน?")}
+        >
+          <button type="button" data-service="Hosting" aria-pressed="false">
+            <Icon name="mic" />
+            {t(lang, "Hosting", "พิธีกร")}
+          </button>
+          <button type="button" data-service="Content" aria-pressed="false">
+            <Icon name="film" />
+            {t(lang, "Content", "คอนเทนต์")}
+          </button>
+          <button type="button" data-service="Voice work" aria-pressed="false">
+            <Icon name="sparkle" />
+            {t(lang, "Voice work", "งานเสียง")}
+          </button>
+        </div>
         <a
           class="contact-option"
           href="https://line.me/ti/p/iLlNAWNNnR"
@@ -402,19 +488,32 @@ const schema = {
           rel="noopener noreferrer"
         >
           <span>
+            <span class="contact-logo">
+              <Icon name="LINE" />
+            </span>
             <small>LINE</small>
             {t(lang, "Let’s start a conversation", "เริ่มต้นพูดคุยกัน")}
           </span>
           <span>↗</span>
         </a>
-        <a class="contact-option" href="mailto:wwkunwadee05@gmail.com">
+        <a
+          class="contact-option"
+          data-booking-email
+          href="mailto:wwkunwadee05@gmail.com"
+        >
           <span>
+            <span class="contact-logo">
+              <Icon name="mail" />
+            </span>
             <small>EMAIL</small>wwkunwadee05@gmail.com
           </span>
           <span>↗</span>
         </a>
         <a class="contact-option" href="tel:+66969769369">
           <span>
+            <span class="contact-logo">
+              <Icon name="phone" />
+            </span>
             <small>{t(lang, "PHONE", "โทรศัพท์")}</small>096-976-9369
           </span>
           <span>↗</span>
@@ -427,7 +526,9 @@ const schema = {
           <a href={resumeURL} target="_blank" rel="noopener noreferrer">
             {t(lang, "Résumé", "เรซูเม่")} ↗
           </a>
-          <a href={`${home(lang)}#videos`} data-close-on-navigate>{t(lang, "Watch video samples", "ชมตัวอย่างวิดีโอ")} ↗</a>
+          <a href={`${home(lang)}#videos`} data-close-on-navigate>
+            {t(lang, "Watch video samples", "ชมตัวอย่างวิดีโอ")} ↗
+          </a>
         </div>
         <button type="button" class="copy-email text-button">
           {t(lang, "Copy email address", "คัดลอกอีเมล")} <span>⧉</span>

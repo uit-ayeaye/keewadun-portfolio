@@ -1,11 +1,19 @@
 ---
+import PreviewVideo from "./PreviewVideo.astro";
+import { videosFor } from "../data/videos";
 import Photo from "./Photo.astro";
 import { t, type EventCredit, type Lang } from "../data/portfolio";
 const {
   event,
   lang,
   hero = false,
-} = Astro.props as { event: EventCredit; lang: Lang; hero?: boolean };
+  preview = true,
+} = Astro.props as {
+  event: EventCredit;
+  lang: Lang;
+  hero?: boolean;
+  preview?: boolean;
+};
 ---
 
 <figure
@@ -29,6 +37,9 @@ const {
     hero={hero}
     sizes="(max-width: 650px) 90vw, (max-width: 1000px) 44vw, 30vw"
   />
+  {preview && videosFor(event.id)[0] && (
+    <PreviewVideo clip={videosFor(event.id)[0]} />
+  )}
   {!event.image && (
     <>
       <span class="visual-orbit" aria-hidden="true">
