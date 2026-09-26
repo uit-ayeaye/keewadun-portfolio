@@ -1,7 +1,12 @@
+import { initReveals } from "./reveals";
+import { createGallery } from "./gallery";
 import { initPreviews } from "./previews";
-import { animate, inView, stagger } from "motion";
+import { animate, stagger } from "motion";
+let activeBody: HTMLElement | undefined;
 let teardown: (() => void) | undefined;
 function initializePage() {
+  if (activeBody === document.body) return;
+  activeBody = document.body;
   teardown?.();
   if (!document.querySelector("#menu-dialog")) return;
   const controller = new AbortController();
@@ -39,6 +44,95 @@ function initializePage() {
     },
     { signal },
   );
+  const photoDialog =
+    document.querySelector<HTMLDialogElement>("#photo-dialog");
+  const photoStage = photoDialog?.querySelector<HTMLElement>(".gallery-stage");
+  if (photoDialog && photoStage) {
+    const gallery = createGallery(photoStage, signal);
+    const buttons = [
+      ...document.querySelectorAll<HTMLButtonElement>("[data-mc-photo]"),
+    ];
+    const items = buttons.map((button) => {
+      const image = button.querySelector("img")!;
+      return {
+        src:
+          image.srcset?.split(",").at(-1)?.trim().split(" ")[0] ||
+          image.currentSrc ||
+          image.src,
+        alt: image.alt,
+      };
+    });
+    let selected = 0;
+    const counter = photoDialog.querySelector("[data-photo-count]")!;
+    const show = async () => {
+      const index = selected,
+        item = items[index];
+      const nearby = [-1, 1].map(
+        (d) => items[(index + d + items.length) % items.length].src,
+      );
+      if (await gallery.show(item.src, item.alt, nearby))
+        counter.textContent = `${index + 1} / ${items.length}`;
+    };
+    buttons.forEach((button, index) => {
+      button.addEventListener(
+        "click",
+        () => {
+          selected = index;
+          openDialog(photoDialog);
+          void show();
+        },
+        { signal },
+      );
+      button.addEventListener(
+        "pointerenter",
+        () => gallery.warm([items[index].src]),
+        { signal, once: true },
+      );
+    });
+    const move = (delta: number) => {
+      selected = (selected + delta + items.length) % items.length;
+      void show();
+    };
+    photoDialog.querySelector<HTMLButtonElement>(
+      "[data-photo-prev]",
+    )!.disabled = items.length < 2;
+    photoDialog.querySelector<HTMLButtonElement>(
+      "[data-photo-next]",
+    )!.disabled = items.length < 2;
+    photoDialog
+      .querySelector("[data-photo-prev]")!
+      .addEventListener("click", () => move(-1), { signal });
+    photoDialog
+      .querySelector("[data-photo-next]")!
+      .addEventListener("click", () => move(1), { signal });
+    photoDialog.addEventListener(
+      "keydown",
+      (e) => {
+        if (e.key === "ArrowLeft" || e.key === "ArrowRight") {
+          e.preventDefault();
+          move(e.key === "ArrowLeft" ? -1 : 1);
+        }
+      },
+      { signal },
+    );
+    photoDialog.addEventListener("close", () => gallery.reset(), { signal });
+    let touchX = 0;
+    photoStage.addEventListener(
+      "touchstart",
+      (e) => {
+        touchX = e.changedTouches[0].clientX;
+      },
+      { signal, passive: true },
+    );
+    photoStage.addEventListener(
+      "touchend",
+      (e) => {
+        const delta = e.changedTouches[0].clientX - touchX;
+        if (Math.abs(delta) > 60) move(delta > 0 ? -1 : 1);
+      },
+      { signal, passive: true },
+    );
+  }
   const closing = new WeakSet<HTMLDialogElement>();
   function closeDialog(dialog: HTMLDialogElement) {
     if (!dialog.open || closing.has(dialog)) return;
@@ -262,7 +356,10 @@ function initializePage() {
     },
     { signal },
   );
-  if (!reduced.matches) {
+  if (
+    !reduced.matches &&
+    !document.documentElement.hasAttribute("data-language-swap")
+  ) {
     animate(
       ".hero-enter",
       { opacity: [0, 1], y: [22, 0] },
@@ -274,30 +371,8 @@ function initializePage() {
         { opacity: [0, 1], y: [32, 0], rotate: [-3, 0] },
         { type: "spring", bounce: 0.28, duration: 1.1, delay: 0.15 },
       );
-    const stopReveals = inView(
-      "[data-reveal]",
-      (element) => {
-        if (!reduced.matches)
-          animate(
-            element,
-            { opacity: [0, 1], y: [32, 0], scale: [0.97, 1] },
-            {
-              type: "spring",
-              bounce: 0.28,
-              duration: 0.75,
-              delay:
-                (Array.from(element.parentElement?.children || []).indexOf(
-                  element,
-                ) %
-                  4) *
-                0.045,
-            },
-          );
-      },
-      { margin: "0px 0px -35px 0px" },
-    );
-    signal.addEventListener("abort", stopReveals, { once: true });
   }
+  initReveals("[data-reveal]", signal);
   const progress = document.querySelector<HTMLElement>(".reading-progress");
   let framePending = false;
   function updateProgress() {
@@ -596,4 +671,5 @@ function initializePage() {
   };
 }
 document.addEventListener("astro:page-load", initializePage);
+document.addEventListener("portfolio:localize", initializePage);
 document.addEventListener("astro:before-swap", () => teardown?.());

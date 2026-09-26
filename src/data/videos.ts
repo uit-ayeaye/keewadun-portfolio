@@ -83,8 +83,8 @@ export const videos: VideoClip[] = [
     en: "MFU · Innovation Day",
     th: "MFU · Innovation Day",
     description: {
-      en: "A moment on the Innovation Day stage.",
-      th: "ช่วงเวลาบนเวทีงาน Innovation Day",
+      en: "An audience-view glimpse of Dada hosting MFU Innovation Day.",
+      th: "ชม Dada ดำเนินรายการงาน MFU Innovation Day จากมุมผู้ชม",
     },
     seconds: 28.07,
     source: "Innovation day.mov",
@@ -96,8 +96,8 @@ export const videos: VideoClip[] = [
     en: "THAIFEX · Thai Union",
     th: "THAIFEX · Thai Union",
     description: {
-      en: "Presenting at the Thai Union exhibition booth.",
-      th: "การนำเสนอภายในบูธ Thai Union",
+      en: "Dada presenting at the Thai Union booth during THAIFEX–Anuga Asia.",
+      th: "Dada นำเสนอภายในบูธ Thai Union ในงาน THAIFEX–Anuga Asia",
     },
     seconds: 12.08,
     source: "Thaifex Thai Union.mov",
@@ -176,3 +176,17 @@ export const duration = (v: VideoClip) =>
 
 export const highQualityURL = (v: VideoClip) => `${base}/media/${v.id}-hq.mp4`;
 export const previewURL = (v: VideoClip) => `${base}/media/${v.id}-preview.mp4`;
+
+export const previewClipFor = (id: string) =>
+  videos.find(
+    (v) => v.id === (id === "four-lands" ? "four-lands-hosting" : ""),
+  ) || videosFor(id)[0];
+export const posterPosition = (clip: VideoClip) =>
+  (
+    ({
+      "innovation-day": "center 85%",
+      "four-lands-stage": "center 85%",
+      "hllc-opening": "center 88%",
+      "hllc-stage": "center 85%",
+    }) as Record<string, string>
+  )[clip.id] || "center";

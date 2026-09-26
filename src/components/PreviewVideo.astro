@@ -1,10 +1,11 @@
 ---
-import { previewURL, type VideoClip } from "../data/videos";
+import { previewURL, posterPosition, type VideoClip } from "../data/videos";
 const { clip } = Astro.props as { clip: VideoClip };
 ---
 
 <video
   class="ambient-video"
+  style={`object-position:${posterPosition(clip)}`}
   data-preview-src={previewURL(clip)}
   muted
   loop

@@ -1,6 +1,6 @@
 ---
 import PreviewVideo from "./PreviewVideo.astro";
-import { videosFor } from "../data/videos";
+import { previewClipFor, posterURL, posterPosition } from "../data/videos";
 import Photo from "./Photo.astro";
 import { t, type EventCredit, type Lang } from "../data/portfolio";
 const {
@@ -14,6 +14,7 @@ const {
   hero?: boolean;
   preview?: boolean;
 };
+const clip = previewClipFor(event.id);
 ---
 
 <figure
@@ -23,23 +24,33 @@ const {
     { "portrait-visual": !event.image },
   ]}
 >
-  <Photo
-    name={event.image || "dada-portrait.jpg"}
-    alt={
-      event.image
-        ? event[lang]
-        : t(
-            lang,
-            "Dada — portrait, not a photograph of this event",
-            "ภาพบุคคลของ Dada ไม่ใช่ภาพจากงานนี้",
-          )
-    }
-    hero={hero}
-    sizes="(max-width: 650px) 90vw, (max-width: 1000px) 44vw, 30vw"
-  />
-  {preview && videosFor(event.id)[0] && (
-    <PreviewVideo clip={videosFor(event.id)[0]} />
+  {preview && clip ? (
+    <img
+      src={posterURL(clip)}
+      alt={clip[lang]}
+      style={`object-position:${posterPosition(clip)}`}
+      width="720"
+      height="480"
+      loading={hero ? "eager" : "lazy"}
+      decoding="async"
+    />
+  ) : (
+    <Photo
+      name={event.image || "dada-portrait.jpg"}
+      alt={
+        event.image
+          ? event[lang]
+          : t(
+              lang,
+              "Dada — portrait, not a photograph of this event",
+              "ภาพบุคคลของ Dada ไม่ใช่ภาพจากงานนี้",
+            )
+      }
+      hero={hero}
+      sizes="(max-width: 650px) 90vw, (max-width: 1000px) 44vw, 30vw"
+    />
   )}
+  {preview && clip && <PreviewVideo clip={clip} />}
   {!event.image && (
     <>
       <span class="visual-orbit" aria-hidden="true">

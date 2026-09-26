@@ -1,5 +1,12 @@
 ---
-import { videosFor } from "../data/videos";
+import {
+  videosFor,
+  posterURL,
+  videoURL,
+  duration,
+  previewClipFor,
+  posterPosition,
+} from "../data/videos";
 import EventVisual from "./EventVisual.astro";
 import {
   categories,
@@ -10,31 +17,69 @@ import {
   type EventCredit,
 } from "../data/portfolio";
 const { event, lang } = Astro.props as { event: EventCredit; lang: Lang };
+const primary = previewClipFor(event.id);
+const clips = [...videosFor(event.id)].sort(
+  (a, b) => Number(b === primary) - Number(a === primary),
+);
 ---
 
 <template id={`preview-${event.id}`}>
   <div class="preview-layout">
-    <EventVisual event={event} lang={lang} preview={false} />
+    {clips[0] ? (
+      <a
+        class="event-sample-visual"
+        href={videoURL(clips[0])}
+        data-video={clips[0].id}
+        data-astro-reload
+        aria-label={clips[0][lang]}
+      >
+        <img
+          src={posterURL(clips[0])}
+          alt={clips[0][lang]}
+          width="720"
+          height="480"
+          style={`object-position:${posterPosition(clips[0])}`}
+          decoding="async"
+        />
+        <span>▶ {duration(clips[0])}</span>
+      </a>
+    ) : (
+      <EventVisual event={event} lang={lang} preview={false} />
+    )}
     <div class="preview-copy">
       <p class="eyebrow">
         {categories[event.category][lang]}{" "}
         {event.year !== "—" && `· ${event.year}`}
       </p>
       <h2 id="preview-title">{event[lang]}</h2>
-      <p>{description(event, lang)}</p>
-      {videosFor(event.id).length > 0 && (
-        <a
-          class="preview-video-link text-link"
-          href={`${eventPath(lang, event.id)}#videos`}
-        >
-          ▶{" "}
-          {t(
-            lang,
-            `Watch ${videosFor(event.id).length} video sample${videosFor(event.id).length > 1 ? "s" : ""}`,
-            `ชม ${videosFor(event.id).length} วิดีโอ`,
-          )}{" "}
-          ↗
-        </a>
+      <p>
+        {clips.length
+          ? clips.map((clip) => clip.description[lang]).join(" ")
+          : description(event, lang)}
+      </p>
+      {clips.length > 0 && (
+        <div class="event-sample-links">
+          {clips.map((clip) => (
+            <a
+              class="preview-video-link"
+              href={videoURL(clip)}
+              data-video={clip.id}
+              data-astro-reload
+            >
+              <span class="sample-play" aria-hidden="true">
+                ▶
+              </span>
+              <span>
+                <strong>{clip[lang]}</strong>
+                <small>
+                  {duration(clip)} ·{" "}
+                  {t(lang, "Original event audio", "เสียงจริงจากงาน")}
+                </small>
+              </span>
+              <span aria-hidden="true">↗</span>
+            </a>
+          ))}
+        </div>
       )}
       <a class="button" href={eventPath(lang, event.id)}>
         {t(lang, "Explore this story", "ชมเรื่องราวนี้")} <span>↗</span>

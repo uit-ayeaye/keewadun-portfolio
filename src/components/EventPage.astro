@@ -55,7 +55,7 @@ const clips = videosFor(e.id);
     <div class="event-cover wrap" data-reveal>
       <button
         type="button"
-        data-astro-reload data-lightbox
+        data-mc-photo
         aria-label={t(lang, "View full photograph", "ดูภาพขนาดเต็ม")}
       >
         <Photo
@@ -68,7 +68,15 @@ const clips = videosFor(e.id);
           {t(lang, "Take a closer look", "ดูใกล้ ๆ")} ⤢
         </span>
       </button>
-      {e.imageSource === "video" && <p class="source-note">{t(lang, "Still from the supplied event video.", "ภาพจากวิดีโอผลงานที่ได้รับ")}</p>}
+      {e.imageSource === "video" && (
+        <p class="source-note">
+          {t(
+            lang,
+            "Still from the supplied event video.",
+            "ภาพจากวิดีโอผลงานที่ได้รับ",
+          )}
+        </p>
+      )}
     </div>
   ) : (
     <div class="event-cover wrap placeholder-cover">
@@ -82,12 +90,24 @@ const clips = videosFor(e.id);
       </p>
     </div>
   )}
-  {clips.length > 0 && <section id="videos" class="section wrap event-films">
-    <div class="section-heading" data-reveal><div><p class="eyebrow">DADA / {t(lang, "IN MOTION", "บนเวที")}</p>
-      <h2>{t(lang, "Hear the moment.", "ชมช่วงเวลาบนเวที")}</h2></div>
-      <p>{t(lang, "Real stage moments. Original event audio.", "บรรยากาศบนเวที พร้อมเสียงจริงจากงาน")}</p></div>
-    <VideoGrid clips={clips} lang={lang} />
-  </section>}
+  {clips.length > 0 && (
+    <section id="videos" class="section wrap event-films">
+      <div class="section-heading" data-reveal>
+        <div>
+          <p class="eyebrow">DADA / {t(lang, "IN MOTION", "บนเวที")}</p>
+          <h2>{t(lang, "Hear the moment.", "ชมช่วงเวลาบนเวที")}</h2>
+        </div>
+        <p>
+          {t(
+            lang,
+            "Real stage moments. Original event audio.",
+            "บรรยากาศบนเวที พร้อมเสียงจริงจากงาน",
+          )}
+        </p>
+      </div>
+      <VideoGrid clips={clips} lang={lang} />
+    </section>
+  )}
   <section class="section wrap story-grid">
     <div data-reveal>
       <p class="eyebrow">
@@ -143,11 +163,17 @@ const clips = videosFor(e.id);
       <h2>{t(lang, "A closer look.", "อีกมุมของเรื่องราว")}</h2>
       {e.gallery.map((name) => (
         <figure>
-          <Photo
-            name={name}
-            alt={e.id === "pride" ? "MFU Pride 2025" : e[lang]}
-            sizes="(max-width: 700px) 90vw, 70vw"
-          />
+          <button
+            type="button"
+            data-mc-photo
+            aria-label={t(lang, "View full photograph", "ดูภาพขนาดเต็ม")}
+          >
+            <Photo
+              name={name}
+              alt={e.id === "pride" ? "MFU Pride 2025" : e[lang]}
+              sizes="(max-width: 700px) 90vw, 70vw"
+            />
+          </button>
           <figcaption>
             {e.id === "pride" ? "MFU PRIDE · 2025" : e[lang]}
           </figcaption>
@@ -174,7 +200,12 @@ const clips = videosFor(e.id);
         {t(lang, "Your moment,", "ช่วงเวลาของคุณ")}{" "}
         <em>{t(lang, "next?", "ต่อไปไหม?")}</em>
       </h2>
-      <a class="button lime" href="mailto:wwkunwadee05@gmail.com" data-astro-reload data-contact>
+      <a
+        class="button lime"
+        href="mailto:wwkunwadee05@gmail.com"
+        data-astro-reload
+        data-contact
+      >
         {t(lang, "Let’s talk", "มาคุยกัน")} <span>↗</span>
       </a>
     </div>
@@ -193,7 +224,19 @@ const clips = videosFor(e.id);
       >
         ×
       </button>
-      <Photo name={e.image} alt={e[lang]} sizes="90vw" />
+      <div class="gallery-stage"></div>
+      <div class="photo-navigation">
+        <button
+          data-photo-prev
+          aria-label={t(lang, "Previous photo", "ภาพก่อนหน้า")}
+        >
+          ←
+        </button>
+        <span data-photo-count aria-live="polite"></span>
+        <button data-photo-next aria-label={t(lang, "Next photo", "ภาพถัดไป")}>
+          →
+        </button>
+      </div>
     </dialog>
   )}
 </Layout>
