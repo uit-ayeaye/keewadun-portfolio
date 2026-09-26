@@ -60,6 +60,7 @@ function initializePage() {
           image.currentSrc ||
           image.src,
         alt: image.alt,
+        placeholder: image.currentSrc || image.src,
       };
     });
     let selected = 0;
@@ -70,7 +71,7 @@ function initializePage() {
       const nearby = [-1, 1].map(
         (d) => items[(index + d + items.length) % items.length].src,
       );
-      if (await gallery.show(item.src, item.alt, nearby))
+      if (await gallery.show(item.src, item.alt, nearby, item.placeholder))
         counter.textContent = `${index + 1} / ${items.length}`;
     };
     buttons.forEach((button, index) => {
